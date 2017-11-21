@@ -2,6 +2,9 @@
 .idea/
 .config_secret/
 .static_root/
+.config/
+Dockerfile
+Dockerfile.base
 
 # Created by https://www.gitignore.io/api/linux,macos,python,django,pycharm
 
