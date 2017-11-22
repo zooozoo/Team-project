@@ -1,31 +1,31 @@
-from pprint import pprint
-
 from .base import *
 
 config_secret = json.loads(open(CONFIG_SECRET_DEV_FILE).read())
+# location, storages
 
-# AWS
-AWS_ACCESS_KEY_ID = config_secret["aws"]["acces_key_id"]
-AWS_SECRET_ACCESS_KEY = config_secret["aws"]["secret_access_key"]
-AWS_STORAGE_BUCKET_NAME = config_secret["aws"]["s3_bucket_name"]
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_REGION_NAME = 'ap-northeast-2'
-
-# AWS Storage
+STATICFILES_STORAGE = 'config.storages.StaticStorage'
 STATICFILES_LOCATION = 'static'
+
+DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 MEDIAFILES_LOCATION = 'media'
 
-# S3 FileStorage
-DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
-STATICFILES_STORAGE = 'config.storages.StaticStorage'
+# AWS
 
-# Databases
-DATABASES = config_secret['django']['databases']
+AWS_ACCESS_KEY_ID = config_secret['aws']['access_key_id']
+AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
+AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
+AWS_S3_REGION_NAME = config_secret['aws']['s3_region_name']
+AWS_S3_HOST = 's3.ap-northeast-2.amazonaws.com'
+S3_USE_SIGV4 = True
 
-# Allowed hosts
+# db
+DATABASES = config_secret["django"]["databases"]
+# database
+#DATABASES = config_secret_common["django"]["databases"]
+
+# allowed_hosts
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     '.elasticbeanstalk.com',
 ]
-
-pprint(DATABASES)
