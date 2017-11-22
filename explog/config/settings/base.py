@@ -13,12 +13,14 @@ import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # instagram_project/
 ROOT_DIR = os.path.dirname(BASE_DIR)
 # instagram_project/.config_secret/
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
+CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_dev.json')
+CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_deploy.json')
 
 # instagram_project/instagram/media/
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
@@ -49,6 +51,22 @@ config_secret_common = json.loads(config_secret_common_str)
 
 SECRET_KEY = config_secret_common['django']['secret_key']
 
+# WSGI APPLICATION
+WSGI_APPLICATION = 'config.wsgi.application'
+
+# FACEBOOK
+
+FACEBOOK_APP_ID = config_secret_common['facebook']['app_id']
+FACEBOOK_APP_SECRET_CODE = config_secret_common['facebook']['secret_code']
+FACEBOOK_SCOPE = [
+    'user_friends',
+    'public_profile',
+    'email',
+]
+
+# USER MODEL
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -65,6 +83,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'storages',
 ]
 
 MIDDLEWARE = [
