@@ -1,6 +1,5 @@
 import random
 import string
-
 from .base import *
 
 ALLOWED_HOSTS = [
