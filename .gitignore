@@ -3,7 +3,9 @@
 .config_secret/
 .static_root/
 .config/
-
+Dockerfile
+Dockerfile.base
+Dockerfile.local
 
 =======
 .media/
