@@ -3,9 +3,8 @@
 .config_secret/
 .static_root/
 .config/
-Dockerfile
-Dockerfile.base
-Dockerfile.local
+# .ebignore
+!.config_secret/
 
 .media/
 .static_root/
