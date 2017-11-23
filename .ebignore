@@ -1,9 +1,9 @@
+# .ebignore
+!.config_secret
 
 # Custom
 .idea/
-.config_secret/
 .static/
-.media/
 
 # Created by https://www.gitignore.io/api/git,linux,python,django,pycharm
 
