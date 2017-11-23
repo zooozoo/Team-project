@@ -3,8 +3,12 @@
 .config_secret/
 .static_root/
 .config/
+
+
+=======
 .media/
 .static_root/
+>>>>>>> 99ab505f187d305b2ceaa85f417df781b488f964
 # Created by https://www.gitignore.io/api/linux,macos,python,django,pycharm
 
 ### Django ###

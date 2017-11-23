@@ -42,8 +42,11 @@ ENV         LANG C.UTF-8
 
 COPY        requirements.txt /srv/requirements.txt
 RUN         /root/.pyenv/versions/app/bin/pip install -r /srv/requirements.txt
+<<<<<<< HEAD
+=======
 
 COPY        . /srv/app
 RUN         /root/.pyenv/versions/app/bin/pip install -r \
             /srv/app/requirements.txt
 
+>>>>>>> master
