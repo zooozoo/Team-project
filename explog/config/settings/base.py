@@ -56,14 +56,14 @@ SECRET_KEY = config_secret_common['django']['secret_key']
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # FACEBOOK
-
-FACEBOOK_APP_ID = config_secret_common['facebook']['app_id']
-FACEBOOK_APP_SECRET_CODE = config_secret_common['facebook']['secret_code']
-FACEBOOK_SCOPE = [
-    'user_friends',
-    'public_profile',
-    'email',
-]
+#
+# FACEBOOK_APP_ID = config_secret_common['facebook']['app_id']
+# FACEBOOK_APP_SECRET_CODE = config_secret_common['facebook']['secret_code']
+# FACEBOOK_SCOPE = [
+#     'user_friends',
+#     'public_profile',
+#     'email',
+# ]
 
 # USER MODEL
 
@@ -86,6 +86,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'storages',
+
 ]
 
 MIDDLEWARE = [
@@ -129,7 +130,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #     }
 # }
 
-DATABASES = config_secret_common['django']['databases']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

@@ -22,12 +22,11 @@ S3_USE_SIGV4 = True
 
 # db
 DATABASES = config_secret["django"]["databases"]
-# database
-#DATABASES = config_secret_common["django"]["databases"]
+
 
 # allowed_hosts
 ALLOWED_HOSTS = [
-
     '127.0.0.1',
     '.elasticbeanstalk.com',
+    '.locomoco.co.kr',
 ]

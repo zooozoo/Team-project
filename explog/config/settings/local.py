@@ -1,13 +1,10 @@
-import random
-import string
 from .base import *
 
 ALLOWED_HOSTS = [
-     'localhost',
-         '127.0.0.1',
-    '.elasticbeanstalk.com',
+    'localhost',
+    '127.0.0.1',
 ]
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     'default': {
