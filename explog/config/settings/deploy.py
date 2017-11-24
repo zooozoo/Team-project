@@ -12,7 +12,6 @@ DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 MEDIAFILES_LOCATION = 'media'
 
 # AWS
-
 AWS_ACCESS_KEY_ID = config_secret['aws']['access_key_id']
 AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
 AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
@@ -23,7 +22,6 @@ S3_USE_SIGV4 = True
 
 # db
 DATABASES = config_secret["django"]["databases"]
-
 
 # allowed_hosts
 ALLOWED_HOSTS = [

@@ -1,14 +1,12 @@
+# .ebignore
+!.config_secret
+
 # Custom
 .idea/
-.config_secret/
-.static_root/
-.config/
-# .ebignore
-!.config_secret/
+.static/
 
-.media/
-.static_root/
-# Created by https://www.gitignore.io/api/linux,macos,python,django,pycharm
+# Created by https://www.gitignore.io/api/git,linux,python,django,pycharm
+
 
 ### Django ###
 *.log
@@ -22,6 +20,9 @@ media
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
 # <django-project-name>/staticfiles/
+
+### Git ###
+*.orig
 
 ### Linux ###
 *~
@@ -109,6 +110,9 @@ atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
 .idea/replstate.xml
+
+# Ruby plugin and RubyMine
+/.rakeTasks
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml

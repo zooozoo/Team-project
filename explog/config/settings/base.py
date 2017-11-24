@@ -18,6 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # instagram_project/
 ROOT_DIR = os.path.dirname(BASE_DIR)
+
 # instagram_project/.config_secret/
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
 CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_dev.json')
