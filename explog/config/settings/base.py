@@ -74,9 +74,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'member.User'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,6 +87,8 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'storages',
+
+    'member',
 
 ]
 
