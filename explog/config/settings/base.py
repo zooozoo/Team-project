@@ -21,8 +21,8 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # instagram_project/.config_secret/
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
-CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_dev.json')
-CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_deploy.json')
+CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_dev.json')
+CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_deploy.json')
 
 # instagram_project/instagram/media/
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
@@ -40,7 +40,6 @@ STATICFILES_DIRS = [
 ]
 # instagram_project/instagram/templates/
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -109,7 +108,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [TEMPLATE_DIR, ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

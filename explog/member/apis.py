@@ -4,7 +4,7 @@ from rest_framework.compat import authenticate
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from member.serializers import UserSerializer
+from member.serializers import LoginSerializer
 
 
 class LoginView(APIView):
@@ -19,7 +19,7 @@ class LoginView(APIView):
             token, token_created = Token.objects.get_or_create(user=user)
             data = {
                 'token': token.key,
-                'user': UserSerializer(user).data
+                'user': LoginSerializer(user).data
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
