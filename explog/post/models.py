@@ -19,6 +19,13 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
 
+# 글테이블, 사진테이블, 경로 테이블을 받음 - 각각이 하나의 아이템으로 취급
+# 사진만 여러개를 한 PostItem 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
+class PostItem(models.Model):
+    post = models.ForeignKey(Post)
+    type = models.CharField(max_length=3,blank=True,null=True)
+
+
 class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
     post = models.ForeignKey(Post)
@@ -41,7 +48,7 @@ class PostText(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    group = models.ForeignKey(PostItem)
+    post = models.ForeignKey(Post)
 
 # 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
 class PostPhoto(models.Model):
@@ -51,19 +58,14 @@ class PostPhoto(models.Model):
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # PostItem필드를 외래키로 가짐
-    group = models.ForeignKey(PostItem)
-
-# 글테이블, 사진테이블, 경로 테이블을 받음 - 각각이 하나의 아이템으로 취급
-# 사진만 여러개를 한 PostItem 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
-class PostItem(models.Model):
+    content_group = models.ForeignKey(PostItem)
     post = models.ForeignKey(Post)
 
 # 경로 테이블
 # PostItem 테이블을 외래키로 가지면 한 포스트에 여러 경로를 넣는 방식
 # 만약 경로 하나만을 넣게 하기 위해선 post = models.ForeignKey(Post) 형식으로 하면 해결
 class PostPath(models.Model):
-    group = models.ForeignKey(PostItem)
-
+    post = models.ForeignKey(Post)
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()

@@ -1,13 +1,15 @@
 from django.conf.urls import url
-from .views import PostListAPIView,PostDetailAPIView, PostReplyAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView
+from .views import PostListAPIView,PostDetailAPIView, PostReplyAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
+    PostCreateAPIView
 
 urlpatterns = [
 
     url(r'^$', PostListAPIView.as_view(), name='post_list'),
+    url(r'^create',PostCreateAPIView.as_view(),name='post_create'),
     url(r'^(?P<post_pk>\d+)/$',PostDetailAPIView.as_view(), name='post_detail'),
-    url(r'^postreply/$',PostReplyAPIView,name='post_reply'),
-    url(r'^postreply/(?P<postreply_pk>\d+)',PostReplyUpdateAPIView,name='post_reply_detail'),
-    url(r'^posttext/(?P<posttext_pk>\d+)',PostTextAPIView,name='post_text'),
-    url(r'^postpath/(?P<postpath_pk>\d+)',PostPathAPIView,name='post_path'),
+    url(r'^reply/$',PostReplyAPIView.as_view(),name='post_reply'),
+    url(r'^reply/(?P<reply_pk>\d+)$',PostReplyUpdateAPIView.as_view(),name='post_reply_detail'),
+    url(r'^text/(?P<text_pk>\d+)$',PostTextAPIView.as_view(),name='post_text'),
+    url(r'^path/(?P<path_pk>\d+)$',PostPathAPIView.as_view(),name='post_path'),
 
 ]
