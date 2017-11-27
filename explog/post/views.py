@@ -56,7 +56,7 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     serializer_class = PostTextSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save()
 
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostText.objects.all()
@@ -68,7 +68,7 @@ class PostPathCreateAPIView(generics.CreateAPIView):
     serializer_class = PostPathSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save()
 
 class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPath.objects.all()
