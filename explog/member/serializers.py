@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
@@ -12,6 +13,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'username',
             'img_profile',
         )
+
 
 class SignupSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
@@ -36,12 +38,22 @@ class SignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('비밀번호가 일치하지 않습니다.')
         return data
 
+    def validate_username(self, data):
+        username_validater = RegexValidator("[a-zA-Z가-힣0-9]$")
+        if 2 <= len(data) < 12:
+            try:
+                username_validater(data)
+            except:
+                raise serializers.ValidationError('올바른 숫자 또는 문자를 입력하세요')
+        else:
+            raise serializers.ValidationError('최소 2글자 이상 12글자 미만의 이름을 입력하세요')
+
     def create(self, validated_data):
         return self.Meta.model.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password1'],
             img_profile=validated_data['img_profile'],
-            email = validated_data['email'],
+            email=validated_data['email'],
         )
 
     def get_token(self, obj):
