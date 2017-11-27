@@ -3,8 +3,11 @@ from django.db import models
 
 # Create your models here.
 
+# 임의로 만든 유저 모델 - 나중에 직접 수정해주세요
+
 class User(AbstractUser):
     # state = ?
+    img_profile = models.ImageField(upload_to='media')
     like_posts = models.ManyToManyField(
         'post.Post',
         related_name='like_users',
@@ -53,4 +56,12 @@ class Relation(models.Model):
                f'from: {self.from_user.username}, ' \
                f'to: {self.to_user.username})'
 
+# 임의로 만든 유저 개인 세계여행 마커 - 나중에 수정 바람
+class UserMarker(models.Model):
+    user = models.ForeignKey(User)
+    lat = models.FloatField()
+    lng = models.FloatField()
 
+    class Meta:
+        pass
+        # ordering = []
