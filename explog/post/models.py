@@ -1,18 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+# 유저 모델 및 뷰 수정 요망
 User = get_user_model()
 # Create your models here.
 
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
-    user=models.ForeignKey(User)
+    author=models.ForeignKey(User)
     title = models.CharField(max_length=30)
 
     # 여행 시작 날짜
-    startdate=models.DateTimeField()
+    start_date=models.DateTimeField()
 
     # 여행 끝나는 날짜
-    enddate=models.DateTimeField(blank=True,null=True)
+    end_date=models.DateTimeField(blank=True,null=True)
     # 여행기 작성 시점
     created_at=models.DateTimeField(auto_now_add=True)
     # 여행기 수정 시점
@@ -22,7 +23,7 @@ class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
     post = models.ForeignKey(Post)
 
-    user = models.ForeignKey(User)
+    author = models.ForeignKey(User)
 
 
     content = models.CharField(max_length=100)
