@@ -9,10 +9,10 @@ from .serializers import LoginSerializer, SignupSerializer
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        username = request.data['username']
+        email = request.data['email']
         password = request.data['password']
         user = authenticate(
-            username=username,
+            email=email,
             password=password,
         )
         if user:
@@ -23,7 +23,7 @@ class LoginView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
-            'message': 'Invalid credentials'
+            'message': 'eamil 혹은 비밀번호가 일치하지 않습니다.'
         }
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
 

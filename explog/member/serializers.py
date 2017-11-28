@@ -10,7 +10,7 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'pk',
-            'username',
+            'email',
             'img_profile',
         )
 
@@ -43,10 +43,20 @@ class SignupSerializer(serializers.ModelSerializer):
         if 2 <= len(data) < 12:
             try:
                 username_validater(data)
+                return data
             except:
-                raise serializers.ValidationError('올바른 숫자 또는 문자를 입력하세요')
+                raise serializers.ValidationError('올바른 숫자 또는 문자를 입력하세요(특수문자제외)')
         else:
             raise serializers.ValidationError('최소 2글자 이상 12글자 미만의 이름을 입력하세요')
+
+    def validate_email(self, data):
+        if data:
+            if User.objects.filter(email=data).exists():
+                raise serializers.ValidationError('존재하는 email 입니다.')
+            else:
+                return data
+        raise serializers.ValidationError('반드시 값을 입력해야 합니다.')
+
 
     def create(self, validated_data):
         return self.Meta.model.objects.create_user(
