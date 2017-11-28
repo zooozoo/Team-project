@@ -17,7 +17,8 @@ AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
 AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
 AWS_S3_REGION_NAME = config_secret['aws']['s3_region_name']
 AWS_S3_HOST = 's3.ap-northeast-2.amazonaws.com'
-# S3_USE_SIGV4 = True
+S3_USE_SIGV4 = True
+
 
 # db
 DATABASES = config_secret["django"]["databases"]
