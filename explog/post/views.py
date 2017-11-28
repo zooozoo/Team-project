@@ -16,6 +16,7 @@ class PostListAPIView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
 
+
 class PostCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -27,6 +28,7 @@ class PostCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
@@ -43,13 +45,15 @@ class PostReplyAPIView(generics.ListCreateAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
 
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
 class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
+
 
 class PostTextCreateAPIView(generics.CreateAPIView):
     queryset = PostText.objects.all()
@@ -58,10 +62,12 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
+
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
+
 
 class PostPathCreateAPIView(generics.CreateAPIView):
     queryset = PostPath.objects.all()
@@ -69,6 +75,7 @@ class PostPathCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
 
 class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPath.objects.all()
@@ -80,8 +87,4 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
 class PostPhotolistView(viewsets.ModelViewSet):
     serializer_class = PhotoListSerializer
     parser_classes = (MultiPartParser, FormParser,)
-    queryset=PostPhoto.objects.all()
-
-
-
-
+    queryset = PostPhoto.objects.all()
