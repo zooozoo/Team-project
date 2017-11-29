@@ -1,11 +1,14 @@
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
 
+from member.serializers import UserSerializer
 from .models import Post, PostReply, PostText, PostPath, PostPhoto, PostItem
 
 
 class PostSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     # author = UserSerializer()
+    author = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
@@ -19,6 +22,9 @@ class PostSerializer(serializers.ModelSerializer):
 
         )
 
+    def get_author(self, obj):
+        return obj.author.username
+
 
 # PostList 뷰에서 Post의 첫 번째 사진을 보여주기위한 시리얼라이저
 class PostListSerializer(serializers.ModelSerializer):
@@ -27,6 +33,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
     photo = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -52,10 +59,16 @@ class PostListSerializer(serializers.ModelSerializer):
         photo = PostPhotoSerializer(photo_qs, many=False).data
         return photo
 
+    def get_author(self, obj):
+        return obj.author.username
+
 
 class PostReplySerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     # author = UserSerializer()
+
+    author = serializers.SerializerMethodField()
+
     class Meta:
         model = PostReply
         fields = (
@@ -65,6 +78,9 @@ class PostReplySerializer(serializers.ModelSerializer):
             'content',
             'created_at',
         )
+
+    def get_author(self, obj):
+        return obj.author.username
 
 
 class PostTextSerializer(serializers.ModelSerializer):
@@ -76,7 +92,6 @@ class PostTextSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
             'post',
-
         )
 
 
@@ -140,6 +155,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     photo = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
     reply = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -183,3 +199,6 @@ class PostDetailSerializer(serializers.ModelSerializer):
         reply_qs = PostReply.objects.filter(post=obj_pk)
         reply = PostReplySerializer(reply_qs, many=True).data
         return reply
+
+    def get_author(self, obj):
+        return obj.author.username

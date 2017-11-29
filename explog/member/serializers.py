@@ -5,6 +5,14 @@ from rest_framework.authtoken.models import Token
 from member.models import User
 
 
+# 유저정보를 가지고 오기 위한 serializer, test create 할 때 필요해서 만들었음
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+        )
+
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
