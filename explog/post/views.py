@@ -37,7 +37,7 @@ class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     )
 
 
-class PostReplyAPIView(generics.ListCreateAPIView):
+class PostReplyCreateAPIView(generics.ListCreateAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
 
@@ -49,7 +49,7 @@ class PostReplyAPIView(generics.ListCreateAPIView):
         serializer.save(author=self.request.user)
 
 
-class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostReplyGetDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
@@ -58,18 +58,18 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 class PostTextCreateAPIView(generics.CreateAPIView):
     queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
-    permission_classes = (
-        IsAuthorOrReadOnly,
-    )
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
-class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostTextGetDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
+    permission_classes = (
+        IsAuthorOrReadOnly,
+    )
 
 
 class PostPathCreateAPIView(generics.CreateAPIView):
@@ -80,7 +80,7 @@ class PostPathCreateAPIView(generics.CreateAPIView):
         serializer.save()
 
 
-class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostPathGetDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPath.objects.all()
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'

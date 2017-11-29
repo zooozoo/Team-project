@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
 from rest_framework.relations import PrimaryKeyRelatedField
 
 from member.serializers import UserSerializer
@@ -95,8 +96,10 @@ class PostTextSerializer(serializers.ModelSerializer):
             'post',
             'author',
         )
+
     def get_author(self, obj):
-        return obj.author.username
+        author = UserSerializer(obj.author).data
+        return author
 
 
 class PostPhotoSerializer(serializers.ModelSerializer):

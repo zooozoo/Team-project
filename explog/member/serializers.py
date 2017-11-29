@@ -10,8 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'pk',
             'username',
         )
+
 
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,7 +67,6 @@ class SignupSerializer(serializers.ModelSerializer):
                 return data
         raise serializers.ValidationError('반드시 값을 입력해야 합니다.')
 
-
     def create(self, validated_data):
         return self.Meta.model.objects.create_user(
             username=validated_data['username'],
@@ -76,4 +77,3 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def get_token(self, obj):
         return Token.objects.get_or_create(user=obj)[0].key
-        # return Token.objects.create(user=obj).key 이것도 가능
