@@ -58,9 +58,12 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 class PostTextCreateAPIView(generics.CreateAPIView):
     queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
+    permission_classes = (
+        IsAuthorOrReadOnly,
+    )
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(author=self.request.user)
 
 
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):

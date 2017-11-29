@@ -45,7 +45,6 @@ class PostListSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at',
             'photo',
-
         )
 
     # 메소드필드에 필요한 데이터를 넣는 법
@@ -84,6 +83,8 @@ class PostReplySerializer(serializers.ModelSerializer):
 
 
 class PostTextSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+
     class Meta:
         model = PostText
         fields = (
@@ -92,7 +93,10 @@ class PostTextSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
             'post',
+            'author',
         )
+    def get_author(self, obj):
+        return obj.author.username
 
 
 class PostPhotoSerializer(serializers.ModelSerializer):
@@ -103,6 +107,7 @@ class PostPhotoSerializer(serializers.ModelSerializer):
             'photo',
             'created_at',
             'content_group',
+            'author',
         )
 
 

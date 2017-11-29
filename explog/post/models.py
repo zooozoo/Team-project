@@ -51,6 +51,7 @@ class PostText(models.Model):
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     post = models.ForeignKey(Post)
+    author = models.ForeignKey(User)
 
 
 # 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
@@ -63,6 +64,7 @@ class PostPhoto(models.Model):
     # PostItem필드를 외래키로 가짐
     content_group = models.ForeignKey(PostItem)
     post = models.ForeignKey(Post)
+    author = models.ForeignKey(User)
 
 
 # 경로 테이블
