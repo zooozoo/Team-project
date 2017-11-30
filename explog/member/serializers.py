@@ -27,8 +27,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
     email = serializers.EmailField(allow_blank=True)
     token = serializers.SerializerMethodField()
 
@@ -39,15 +38,10 @@ class SignupSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'img_profile',
-            'password1',
-            'password2',
+            'password',
             'token',
         )
 
-    def validate(self, data):
-        if data['password1'] != data['password2']:
-            raise serializers.ValidationError('비밀번호가 일치하지 않습니다.')
-        return data
 
     def validate_username(self, data):
         username_validater = RegexValidator("[a-zA-Z가-힣0-9]$")
@@ -71,7 +65,7 @@ class SignupSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return self.Meta.model.objects.create_user(
             username=validated_data['username'],
-            password=validated_data['password1'],
+            password=validated_data['password'],
             img_profile=validated_data['img_profile'],
             email=validated_data['email'],
         )
