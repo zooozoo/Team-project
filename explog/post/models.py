@@ -6,6 +6,13 @@ from django.db import models
 User = get_user_model()
 
 
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.db import models
+
+# 유저 모델 및 뷰 수정 요망
+
+
 # Create your models here.
 
 # Post 모델 - 여행기 한 개
@@ -24,48 +31,38 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# 사진만 여러개를 한 PostItem 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
-class PostItem(models.Model):
-    post = models.ForeignKey(Post)
-    type = models.CharField(max_length=3, blank=True, null=True)
-
-
-class PostReply(models.Model):
-    # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
-    post = models.ForeignKey(Post)
-
-    author = models.ForeignKey(User)
-
-    content = models.CharField(max_length=100)
-    # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
-    # 수정시점
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 # 글 하나 테이블
-class PostText(models.Model):
-    title = models.CharField(max_length=255)
+class SubPost(models.Model):
+    post = models.ForeignKey(Post)
+    author = models.ForeignKey(User)
     content = models.TextField()
     # 작성시점
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    post = models.ForeignKey(Post)
-    author = models.ForeignKey(User)
 
 
 # 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
 class PostPhoto(models.Model):
+    post = models.ForeignKey(SubPost)
+    author = models.ForeignKey(User)
     photo = models.ImageField()
     # 작성시점
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # PostItem필드를 외래키로 가짐
-    content_group = models.ForeignKey(PostItem)
+
+
+class PostReply(models.Model):
+    # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
     post = models.ForeignKey(Post)
     author = models.ForeignKey(User)
+    content = models.CharField(max_length=100)
+    # 작성시점
+    created_at = models.DateTimeField(auto_now_add=True)
+    # 수정시점
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 # 경로 테이블
