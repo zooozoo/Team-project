@@ -17,9 +17,13 @@ class LoginView(APIView):
         )
         if user:
             token, token_created = Token.objects.get_or_create(user=user)
+            print(LoginSerializer(user).data)
             data = {
+                'pk': LoginSerializer(user).data['pk'],
+                'username': LoginSerializer(user).data['username'],
+                'email': LoginSerializer(user).data['email'],
+                'img_profile': LoginSerializer(user).data['img_profile'],
                 'token': token.key,
-                'user': LoginSerializer(user).data
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
