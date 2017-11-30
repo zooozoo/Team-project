@@ -5,6 +5,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from member.serializers import UserSerializer
 from .models import (
     Post,
+    SubPost,
     PostPhoto,
 )
 
@@ -27,6 +28,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         return obj.author.username
+
+
 #
 #
 # PostList 뷰에서 Post의 첫 번째 사진을 보여주기위한 시리얼라이저
@@ -66,7 +69,24 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         return obj.author.username
-#
+
+class CreateSubPostSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SubPost
+        fields = (
+            'pk',
+            'post',
+            'author',
+            'content',
+            'created_at',
+            # 'photo',
+        )
+
+    def get_author(self, obj):
+        return obj.author.username
+
 #
 # class PostReplySerializer(serializers.ModelSerializer):
 #     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
@@ -88,25 +108,7 @@ class PostListSerializer(serializers.ModelSerializer):
 #         return obj.author.username
 #
 #
-# class PostTextSerializer(serializers.ModelSerializer):
-#     author = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = PostText
-#         fields = (
-#             'pk',
-#             'title',
-#             'content',
-#             'created_at',
-#             'post',
-#             'author',
-#         )
-#
-#     def get_author(self, obj):
-#         author = UserSerializer(obj.author).data
-#         return author
-#
-#
+
 # class PostPhotoSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = PostPhoto

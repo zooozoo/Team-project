@@ -22,7 +22,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# 글 하나 테이블
+# 글과 사진 묶음의 subpost
 class SubPost(models.Model):
     post = models.ForeignKey(Post)
     author = models.ForeignKey(User)
@@ -33,7 +33,7 @@ class SubPost(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
+# subpost, post와 일대 다 관계로 이어진 photo
 class PostPhoto(models.Model):
     post = models.ForeignKey(Post)
     subpost = models.ForeignKey(SubPost)

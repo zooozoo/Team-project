@@ -5,10 +5,14 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from utils.permissions import IsAuthorOrReadOnly
-from .models import Post
+from .models import (
+    Post,
+    SubPost,
+)
 from .serializers import (
     PostSerializer,
     PostListSerializer,
+    CreateSubPostSerializer,
 )
 
 
@@ -28,6 +32,13 @@ class PostListAPIView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
 
+
+class CreateSubPost(generics.CreateAPIView):
+    queryset = SubPost.objects.all()
+    serializer_class = CreateSubPostSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 # class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Post.objects.all()
@@ -57,12 +68,7 @@ class PostListAPIView(generics.ListAPIView):
 #     lookup_url_kwarg = 'reply_pk'
 #
 #
-# class PostTextCreateAPIView(generics.CreateAPIView):
-#     queryset = PostText.objects.all()
-#     serializer_class = PostTextSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
+
 #
 #
 # class PostTextGetDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
