@@ -6,7 +6,10 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from utils.permissions import IsAuthorOrReadOnly
 from .models import Post
-from .serializers import PostSerializer
+from .serializers import (
+    PostSerializer,
+    PostListSerializer,
+)
 
 
 class PostCreateAPIView(generics.CreateAPIView):
@@ -21,13 +24,11 @@ class PostCreateAPIView(generics.CreateAPIView):
         serializer.save(author=self.request.user)
 
 
-# class PostListAPIView(generics.ListAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostListSerializer
-#
-#
+class PostListAPIView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostListSerializer
 
-#
+
 # class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Post.objects.all()
 #     lookup_url_kwarg = 'post_pk'
