@@ -27,7 +27,7 @@ class LoginView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
-            'message': 'eamil 혹은 비밀번호가 일치하지 않습니다.'
+            'message': 'email 혹은 비밀번호가 일치하지 않습니다.'
         }
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
 
