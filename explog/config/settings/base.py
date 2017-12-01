@@ -74,6 +74,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# member/user 관련 설정
+AUTH_USER_MODEL = 'member.User'
+
+# drf token auth를 사용하기 위한 설정
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 
 # Application definition
 
@@ -88,6 +99,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'storages',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'post',
     'member',
