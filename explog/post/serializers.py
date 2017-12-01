@@ -26,6 +26,7 @@ class PostListSerializer(serializers.ModelSerializer):
     #author = UserSerializer()
 
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
+    # method필드가 아니라 릴레이션필드를 사용해야함.
     photo = serializers.SerializerMethodField()
     class Meta:
         model = Post
@@ -135,7 +136,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     #author = UserSerializer()
 
     #post detail에서 관련 내용들을 전부 가져오기 위한 메서드필드
-    text = serializers.SerializerMethodField()
+    text = serializers.StringRelatedField()
     photo = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
     reply = serializers.SerializerMethodField()
@@ -154,15 +155,6 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'reply',
         )
 
-    # get_필드이름 으로 메서드를 만들어줌
-    def get_text(self,obj):
-        # post의 pk
-        obj_pk = obj.pk
-        # post의 pk를 이용하여 필요한 객체를 가져옴
-        text_qs = PostText.objects.filter(post=obj_pk)
-        # 가져온 객체로 직렬화 - 여러 객체이므로 many=True
-        text = PostTextSerializer(text_qs,many=True).data
-        return text
 
     def get_photo(self,obj):
         obj_pk = obj.pk
