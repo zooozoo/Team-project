@@ -26,7 +26,7 @@ class Post(models.Model):
 class SubPost(models.Model):
     post = models.ForeignKey(Post)
     author = models.ForeignKey(User)
-    content = models.TextField()
+    content = models.TextField(blank=True)
     # 작성시점
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
@@ -34,15 +34,16 @@ class SubPost(models.Model):
 
 
 # subpost, post와 일대 다 관계로 이어진 photo
-class PostPhoto(models.Model):
-    post = models.ForeignKey(Post)
-    subpost = models.ForeignKey(SubPost)
-    author = models.ForeignKey(User)
-    photo = models.ImageField()
+class Photos(models.Model):
+    # post = models.ForeignKey(Post)
+    # subpost = models.ForeignKey(SubPost)
+    # author = models.ForeignKey(User)
+    photo = models.ImageField(null=True)
+    test = models.CharField(max_length=10)
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
-    updated_at = models.DateTimeField(auto_now=True)
+    # updated_at = models.DateTimeField(auto_now=True)
     # PostItem필드를 외래키로 가짐
 
 

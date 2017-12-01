@@ -6,7 +6,7 @@ from member.serializers import UserSerializer
 from .models import (
     Post,
     SubPost,
-    PostPhoto,
+    Photos,
 )
 
 
@@ -70,6 +70,7 @@ class PostListSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         return obj.author.username
 
+
 class CreateSubPostSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
@@ -87,7 +88,73 @@ class CreateSubPostSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         return obj.author.username
 
-#
+
+class CreateSubPostPhotos(serializers.ModelSerializer):
+    photo = serializers.ListField(
+        child=serializers.ImageField(max_length=100,
+                                     allow_empty_file=True,
+                                     ),
+        max_length=5
+    )
+    author = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Photos
+        fields = (
+            'post',
+            'subpost',
+            'author',
+            'photo',
+            'created_at',
+            'updated_at',
+        )
+
+    def get_author(self, obj):
+        return obj.author.username
+
+    def create(self, validated_data):
+        print(validated_data)
+        post = validated_data['post']
+        subpost = validated_data['subpost']
+        photo = validated_data['photo']
+        for img in photo:
+            photo = Photos.objects.create(
+                photo=img,
+                post=post,
+                subpost=subpost,
+            )
+        return photo
+
+
+class photouploadtest(serializers.Serializer):
+    photo = serializers.ListField(
+        child=serializers.ImageField(
+            max_length=50,
+            allow_empty_file=True,
+        ),
+        max_length=5
+    )
+
+    # class Meta:
+    #     model = Photos
+    #
+    #     fields = (
+    #         'photo',
+    #         'test',
+    #
+    #     )
+
+    def create(self, validated_data):
+        print(validated_data)
+        photo = validated_data['photo']
+        # test = validated_data['test']
+        for img in photo:
+            p = Photos.objects.create(
+                photo=img,
+            )
+        # photo = {'photo': ""}
+        return validated_data
+
 # class PostReplySerializer(serializers.ModelSerializer):
 #     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
 #     # author = UserSerializer()
@@ -133,20 +200,7 @@ class CreateSubPostSerializer(serializers.ModelSerializer):
 #
 # # PostPhoto 객체를 여러 개 받기 위한 시리얼라이저
 # # 강사님께 트러블슈팅 요망
-# class PhotoListSerializer(serializers.Serializer):
-#     photo = serializers.ListField(
-#         # PostPhoto를 Image필드로 주었는데 여기서 Image필드인지 File필드인지 확인 필요
-#         child=serializers.FileField(max_length=100000,
-#                                     allow_empty_file=False,
-#                                     use_url=False)
-#     )
-#
-#     def create(self, validated_data):
-#         content_group = PostItem.objects.latest('created_at')
-#         photo = validated_data.pop('photo')
-#         for img in photo:
-#             photo = PostPhoto.objects.create(photo=img, content_group=content_group, **validated_data)
-#         return photo
+
 #
 #
 # class PostPathSerializer(serializers.ModelSerializer):

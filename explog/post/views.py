@@ -3,17 +3,18 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.views import APIView
 
 from utils.permissions import IsAuthorOrReadOnly
 from .models import (
     Post,
     SubPost,
-)
+    Photos)
 from .serializers import (
     PostSerializer,
     PostListSerializer,
     CreateSubPostSerializer,
-)
+    CreateSubPostPhotos, photouploadtest)
 
 
 class PostCreateAPIView(generics.CreateAPIView):
@@ -33,12 +34,25 @@ class PostListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
 
 
-class CreateSubPost(generics.CreateAPIView):
+class SubPostCreateAPIView(generics.CreateAPIView):
     queryset = SubPost.objects.all()
     serializer_class = CreateSubPostSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class SubPostPhootCreateAPIView(generics.CreateAPIView):
+    queryset = Photos.objects.all()
+    serializer_class = CreateSubPostPhotos
+    # parser_classes = (MultiPartParser, FormParser,)
+
+    # def perform_create(self, serializer):
+    #     serializer.save(author=self.request.user)
+
+class photoupload(generics.CreateAPIView):
+    queryset = Photos.objects.all()
+    serializer_class = photouploadtest
 
 # class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Post.objects.all()
@@ -68,9 +82,6 @@ class CreateSubPost(generics.CreateAPIView):
 #     lookup_url_kwarg = 'reply_pk'
 #
 #
-
-#
-#
 # class PostTextGetDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = PostText.objects.all()
 #     serializer_class = PostTextSerializer
@@ -78,7 +89,6 @@ class CreateSubPost(generics.CreateAPIView):
 #     permission_classes = (
 #         IsAuthorOrReadOnly,
 #     )
-#
 #
 # class PostPathCreateAPIView(generics.CreateAPIView):
 #     queryset = PostPath.objects.all()
