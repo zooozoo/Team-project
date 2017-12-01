@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='PostItem',
+            name='PostContent',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('type', models.CharField(blank=True, max_length=3, null=True)),
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ('photo', models.ImageField(upload_to='')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('content_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post.PostItem')),
+                ('content_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post.PostContent')),
                 ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post.Post')),
             ],
         ),

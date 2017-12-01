@@ -19,11 +19,11 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
 
-# 사진만 여러개를 한 PostItem 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
-class PostItem(models.Model):
+# 사진만 여러개를 한 PostContent 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
+class PostContent(models.Model):
     post = models.ForeignKey(Post)
-    type = models.CharField(max_length=3,blank=True,null=True)
-
+    content_type = models.CharField(max_length=3,blank=True,null=True)
+    #choice 설정
 
 class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
@@ -47,7 +47,11 @@ class PostText(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    post = models.ForeignKey(Post)
+    post_content = models.ForeignKey(PostContent)
+
+class PostPhotoGroup(models.Model):
+    order = models.IntegerField()
+    post_content = models.ForeignKey(PostContent)
 
 # 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
 class PostPhoto(models.Model):
@@ -56,13 +60,12 @@ class PostPhoto(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    # PostItem필드를 외래키로 가짐
-    content_group = models.ForeignKey(PostItem)
-    post = models.ForeignKey(Post)
+    # PostPhotoGroup필드를 외래키로 가짐
+    photo_group = models.ForeignKey(PostPhotoGroup)
 
 # 경로 테이블
 class PostPath(models.Model):
-    post = models.ForeignKey(Post)
+    post_content = models.ForeignKey(PostContent)
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()

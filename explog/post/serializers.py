@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Post, PostReply, PostText, PostPath, PostPhoto, PostItem
+from .models import Post, PostReply, PostText, PostPath, PostPhoto, PostContent
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -94,7 +94,7 @@ class PostPhotoSerializer(serializers.ModelSerializer):
 class PostItemSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = PostItem
+        model = PostContent
         fields = (
             'pk',
             'post',
@@ -110,7 +110,7 @@ class PhotoListSerializer ( serializers.Serializer ) :
                                          use_url=False )
                                 )
     def create(self, validated_data):
-        content_group=PostItem.objects.latest('created_at')
+        content_group=PostContent.objects.latest('created_at')
         photo=validated_data.pop('photo')
         for img in photo:
             photo=PostPhoto.objects.create(photo=img,content_group=content_group,**validated_data)
@@ -175,6 +175,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
         path = PostTextSerializer(path_qs,many=True).data
         return path
 
+    #역참조 postreply.set relationfield
     def get_reply(self,obj):
         obj_pk = obj.pk
         reply_qs = PostReply.objects.filter(post=obj_pk)
