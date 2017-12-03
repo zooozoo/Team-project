@@ -13,6 +13,10 @@ from utils.permissions import IsAuthorOrReadOnly
 
 
 class PostListAPIView(generics.ListAPIView):
+    '''
+    포스트를 리스트로 보여줄 때 첫 사진도 함께 보여줘야 함
+    3일 이내 좋아요 순으로 보여주는 것 또한 구현해야 함
+    '''
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
 
@@ -37,9 +41,9 @@ class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostDetailSerializer
 
     # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
-    permission_classes = (
-        IsAuthorOrReadOnly
-    )
+    #permission_classes = (
+    #    IsAuthorOrReadOnly,
+    #)
 
 
 class PostReplyAPIView(generics.ListCreateAPIView):
@@ -54,9 +58,9 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
-    permission_classes = (
-        IsAuthorOrReadOnly
-    )
+    #permission_classes = (
+    #    IsAuthorOrReadOnly,
+    #)
 
 
 class PostTextCreateAPIView(generics.CreateAPIView):
@@ -71,9 +75,9 @@ class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
-    permission_classes = (
-        IsAuthorOrReadOnly
-    )
+#    permission_classes = (
+#        IsAuthorOrReadOnly,
+#    )
 
 
 class PostPathCreateAPIView(generics.CreateAPIView):
@@ -88,9 +92,9 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPath.objects.all()
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'
-    permission_classes = (
-        IsAuthorOrReadOnly
-    )
+#    permission_classes = (
+ #       IsAuthorOrReadOnly,
+  #  )
 
 
 # PostPhoto create뷰는 트러블 슈팅 필요

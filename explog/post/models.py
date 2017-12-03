@@ -20,10 +20,17 @@ class Post(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
 # 사진만 여러개를 한 PostContent 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
+CONTENT_CHOICES = (
+    ("txt","text"),
+    ("img","photo"),
+    ("path","path"),
+)
+# choice필드로 만듦
 class PostContent(models.Model):
     post = models.ForeignKey(Post)
-    content_type = models.CharField(max_length=3,blank=True,null=True)
-    #choice 설정
+    content_type = models.CharField(max_length=4,choices=CONTENT_CHOICES)
+    order = models.IntegerField(default=0)
+
 
 class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
