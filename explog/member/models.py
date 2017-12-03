@@ -3,6 +3,11 @@ from django.db import models
 
 
 class User(AbstractUser):
+    username = models.CharField(
+        max_length=11,
+        blank=False,
+        unique=True,
+    )
     img_profile = models.ImageField(
         upload_to='user',
         blank=True,

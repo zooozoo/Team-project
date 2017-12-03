@@ -24,7 +24,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'pk',
             'email',
             'img_profile',
-            'username'
+            'username',
         )
 
 

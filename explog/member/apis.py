@@ -49,7 +49,10 @@ class Signup(APIView):
 
 class GetUserProfile(APIView):
     def get(self, request, *args, **kwargs):
-        # 역참조
-        posts = Post.objects.all(author=request.user)
-        serializer = PostSerializer(posts)
-        return serializer.data
+        user = request.user
+        posts = user.post_set.all()
+        return_data = []
+        for post in posts:
+            serializer = PostSerializer(post)
+            return_data.append(serializer.data)
+        return Response(return_data)
