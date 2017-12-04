@@ -30,10 +30,11 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static_root')
 
-# instagram_project/instagram/static/
+#배포관련 에러 때문에 주석처리
 # STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
+#패포관련 에러때문에 주석처리
 # STATIC_URL로의 요청은 STATICFILES_DIRS경로의 목록에서 파일을 찾아 리턴
 # STATICFILES_DIRS = [
 #     STATIC_DIR,
