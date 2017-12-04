@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
 
     url(r'^member/', include('member.urls', namespace='memeber')),
-    url(r'^post/',include('post.urls',namespace='post')),
 ]

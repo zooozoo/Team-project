@@ -4,8 +4,6 @@ from rest_framework.compat import authenticate
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from post.models import Post
-from post.serializers import PostSerializer
 from .serializers import LoginSerializer, SignupSerializer, UserSerializer
 
 from member.models import User
@@ -46,13 +44,3 @@ class Signup(APIView):
         error = {key: value}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-
-class GetUserProfile(APIView):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        posts = user.post_set.all()
-        return_data = []
-        for post in posts:
-            serializer = PostSerializer(post)
-            return_data.append(serializer.data)
-        return Response(return_data)
