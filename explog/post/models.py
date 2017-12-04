@@ -19,6 +19,9 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['created_at']
+
 # 사진만 여러개를 한 PostContent 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
 CONTENT_CHOICES = (
     ("txt","text"),
@@ -31,6 +34,8 @@ class PostContent(models.Model):
     content_type = models.CharField(max_length=4,choices=CONTENT_CHOICES)
     order = models.IntegerField(default=0)
 
+    def __str__(self):
+        return '{} ,{}, {}'.format(self.post,self.content_type,self.order)
 
 class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
@@ -45,6 +50,11 @@ class PostReply(models.Model):
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
+
+    class Meta:
+        ordering = ['created_at']
+
+
 # 글 하나 테이블
 class PostText(models.Model):
 
@@ -55,6 +65,10 @@ class PostText(models.Model):
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     post_content = models.ForeignKey(PostContent)
+
+    class Meta:
+        ordering = ['created_at']
+
 
 class PostPhotoGroup(models.Model):
     order = models.IntegerField()
@@ -70,9 +84,17 @@ class PostPhoto(models.Model):
     # PostPhotoGroup필드를 외래키로 가짐
     photo_group = models.ForeignKey(PostPhotoGroup)
 
+
+    class Meta:
+        ordering = ['created_at']
+
+
 # 경로 테이블
 class PostPath(models.Model):
     post_content = models.ForeignKey(PostContent)
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()
+
+    # class Meta:
+    #     ordering = ['created_at']

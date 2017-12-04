@@ -46,7 +46,7 @@ class PostContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostContent
         fields = (
-            'pk',
+
             'order',
             'content_type',
         )
@@ -118,10 +118,19 @@ class PostPathSerializer(serializers.ModelSerializer):
             'pk',
             'lat',
             'lng',
-            'post_content',
+
 
         )
-
+class PostPathCreateSerializer(serializers.ModelSerializer):
+    post_content=serializers.ReadOnlyField()
+    class Meta:
+        model= PostPath
+        fields = (
+            'pk',
+            'lat',
+            'lng',
+            'post_content',
+        )
 
 class PostDetailSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
@@ -144,15 +153,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     #역참조 postreply.set relationfield
 
-class PostTextCreateSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = PostText
-        fields = (
-            'pk',
-            'title',
-            'content',
-            'created_at',
 
-        )
+
 
