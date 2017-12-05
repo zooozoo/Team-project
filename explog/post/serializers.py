@@ -6,13 +6,13 @@ from .models import Post, PostReply, PostText, PostPath, PostPhoto, PostContent
 
 class PostSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
-    author = UserSerializer()
+
 
     class Meta:
         model = Post
         fields =(
             'pk',
-            'author',
+
             'title',
             'start_date',
             'end_date',
@@ -43,15 +43,29 @@ class PostListSerializer(serializers.ModelSerializer):
         )
 
 class PostContentSerializer(serializers.ModelSerializer):
+
+    matter = serializers.SerializerMethodField()
+
     class Meta:
         model = PostContent
         fields = (
-
+            'post',
             'order',
             'content_type',
-        )
+            'matter',
+          )
 
-
+    def get_matter(self,obj):
+        type = obj.content_type
+        if type=='txt':
+            matter = PostTextSerializer(PostText.objects.filter(pk=obj.pk),many=True).data
+            return matter
+        elif type=='img':
+            matter = PostPhotoSerializer(PostPhoto.objects.filter(pk=obj.pk),many=True).data
+            return matter
+        elif type=='path':
+            matter = PostPathSerializer(PostPath.objects.filter(pk=obj.pk),many=True).data
+            return matter
 class PostReplySerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
@@ -118,25 +132,13 @@ class PostPathSerializer(serializers.ModelSerializer):
             'pk',
             'lat',
             'lng',
-
-
-        )
-class PostPathCreateSerializer(serializers.ModelSerializer):
-    post_content=serializers.ReadOnlyField()
-    class Meta:
-        model= PostPath
-        fields = (
-            'pk',
-            'lat',
-            'lng',
-            'post_content',
         )
 
 class PostDetailSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
-
-
+    content = serializers.StringRelatedField(many=True)
+    reply = serializers.StringRelatedField(many=True)
     class Meta:
         model = Post
         fields =(
@@ -146,14 +148,11 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'start_date',
             'end_date',
             'created_at',
-
+            'content',
+            'reply',
         )
 
-
-
     #역참조 postreply.set relationfield
-
-
 
 
 

@@ -6,7 +6,7 @@ User = get_user_model()
 
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
-    author=models.ForeignKey(User)
+    author=models.ForeignKey(User,on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
 
     # 여행 시작 날짜
@@ -19,6 +19,10 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
 
+
+
+
+
     class Meta:
         ordering = ['created_at']
 
@@ -30,18 +34,25 @@ CONTENT_CHOICES = (
 )
 # choice필드로 만듦
 class PostContent(models.Model):
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post,related_name='content')
     content_type = models.CharField(max_length=4,choices=CONTENT_CHOICES)
     order = models.IntegerField(default=0)
 
+
+
+
     def __str__(self):
         return '{} ,{}, {}'.format(self.post,self.content_type,self.order)
+    class Meta:
+        ordering = ['order']
+
+
 
 class PostReply(models.Model):
     # 여행기 하나마다 댓글 - 글 하나마다 쓰는 것이 아님
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='reply')
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,on_delete=models.CASCADE)
 
 
     content = models.CharField(max_length=100)
@@ -64,15 +75,15 @@ class PostText(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    post_content = models.ForeignKey(PostContent)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['created_at']
 
 
-class PostPhotoGroup(models.Model):
-    order = models.IntegerField()
-    post_content = models.ForeignKey(PostContent)
+# class PostPhotoGroup(models.Model):
+#     order = models.IntegerField()
+#     post_content = models.ForeignKey(PostContent)
 
 # 사진 하나 테이블 - PostItem필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여줄 수 있음
 class PostPhoto(models.Model):
@@ -82,8 +93,8 @@ class PostPhoto(models.Model):
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐
-    photo_group = models.ForeignKey(PostPhotoGroup)
-
+    # photo_group = models.ForeignKey(PostPhotoGroup)
+    post_content=models.ForeignKey(PostContent,on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['created_at']
@@ -91,7 +102,7 @@ class PostPhoto(models.Model):
 
 # 경로 테이블
 class PostPath(models.Model):
-    post_content = models.ForeignKey(PostContent)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()
