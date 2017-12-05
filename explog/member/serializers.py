@@ -78,8 +78,6 @@ class FollwingSerializer(serializers.Serializer):
     from_user = serializers.IntegerField()
     to_user = serializers.IntegerField()
 
-    # 필드에서 발생하는 에러메시지를 커스터마이징
-
     def create(self, validated_data):
         to_user = User.objects.get(pk=validated_data['to_user'])
         from_user = User.objects.get(pk=validated_data['from_user'])

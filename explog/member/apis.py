@@ -63,9 +63,7 @@ class Follwing(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(data, status=status.HTTP_200_OK)
-        print(serializer.errors.values())
         er_messege = list(serializer.errors.values())[0][0]
-        print(er_messege)
         data = {
             'error': er_messege
         }
