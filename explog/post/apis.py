@@ -51,16 +51,20 @@ class PostDetailAPIView(generics.ListAPIView):
 
 
 class PostReplyListAPIView(generics.ListAPIView):
+
+
     serializer_class = PostReplySerializer
-    lookup_url_kwarg = 'post_pk'
 
     def get_queryset(self):
-        reply = PostReply.objects.filter(post=self.lookup_url_kwarg)
-        return reply
+        post_pk=self.kwargs['post_pk']
+
+        return PostReply.objects.filter(post=post_pk)
+
+
 
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
-    queryset = Post.objects.filter()
+    queryset = Post.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'post_pk'
 
