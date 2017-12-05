@@ -92,11 +92,9 @@ class FollwingSerializer(serializers.Serializer):
         return data
 
     def validate_to_user(self, data):
-        if User.objects.filter(pk=self.context['request'].user.pk).exists():
-            request_user = User.objects.get(pk=self.context['request'].user.pk)
-            if User.objects.filter(pk=data).exists():
-                if request_user.following_users.filter(pk=data).exists():
-                    raise serializers.ValidationError('이미 follow하고 있습니다.')
-                return data
-            raise serializers.ValidationError('존재하지 않는 user')
-        raise serializers.ValidationError('로그인상태 아님')
+        request_user = User.objects.get(pk=self.context['request'].user.pk)
+        if User.objects.filter(pk=data).exists():
+            if request_user.following_users.filter(pk=data).exists():
+                raise serializers.ValidationError('이미 follow하고 있습니다.')
+            return data
+        raise serializers.ValidationError('존재하지 않는 user')
