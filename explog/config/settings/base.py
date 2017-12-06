@@ -76,6 +76,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'member.User'
 
+
 # drf token auth를 사용하기 위한 설정
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

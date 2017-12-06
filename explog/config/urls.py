@@ -21,6 +21,12 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.IndexView.as_view(), name='index'),
+<<<<<<< HEAD
 
     url(r'^member/', include('member.urls', namespace='memeber')),
+=======
+    url(r'^post/',include('post.urls',namespace='post')),
+    url(r'^member/', include('member.urls', namespace='memeber')),
+
+>>>>>>> 97d27a04b2de33fee4c64e90f18973d58a5cb955
 ]
