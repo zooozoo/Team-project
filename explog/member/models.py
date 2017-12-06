@@ -35,7 +35,6 @@ class User(AbstractUser):
         related_name='followers',
     )
 
-
     # 유저의 모든 포스트들이 받은 좋아요 갯수를 총합하여 total_liked 필드에 저장
     def save_total_liked(self, *args, **kwargs):
         posts = self.post_set.all()

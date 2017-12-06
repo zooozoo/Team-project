@@ -69,3 +69,4 @@ class Follwing(APIView):
             'error': er_messege
         }
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
