@@ -40,11 +40,12 @@ class PostCreateAPIView(generics.CreateAPIView):
 
 
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
-
-
-    post_matter1_serializer = PostContent1Serializer
-    post_matter2_serializer = PostContent2Serializer
-    post_matter3_serializer = PostContent3Serializer
+    lookup_url_kwarg = 'post_pk'
+    queryset = Post.objects.all()
+    content_serializer=PostContentSerializer
+    text_serializer = PostTextSerializer
+    photo_serializer = PostPhotoSerializer
+    path_serializer = PostPathSerializer
 
     def list(self, request, *args, **kwargs):
         data = {}
@@ -52,32 +53,44 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
             if queryset.content_type == 'txt':
-                post_content_serializer = self.post_matter1_serializer(queryset)
-                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+                post_content_serializer = self.content_serializer(queryset)
+                text_qs=PostText.objects.get(post_content=queryset)
+                text_serializer=self.text_serializer(text_qs)
+
+                data.update({
+                    "post_content{}".format(queryset.pk): post_content_serializer.data,
+                    "matter{}".format(queryset.pk):text_serializer.data
+                })
 
             elif queryset.content_type == 'img':
-                post_content_serializer = self.post_matter2_serializer(queryset)
-                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+                post_content_serializer = self.content_serializer(queryset)
+                photo_qs = PostPhoto.objects.get(post_content=queryset)
+                photo_serializer=self.photo_serializer(photo_qs)
+
+                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,"matter{}".format(queryset.pk):photo_serializer.data})
 
             elif queryset.content_type == 'path':
-                post_content_serializer = self.post_matter3_serializer(queryset)
-                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+                post_content_serializer = self.content_serializer(queryset)
+                path_qs=PostPath.objects.get(post_content=queryset)
+                path_serializer=self.path_serializer(path_qs)
+
+                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,"matter{}".format(queryset.pk):path_serializer.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    # class PostDetailAPIView(generics.ListAPIView):
-    #     queryset = PostContent.objects.filter()
-    #     lookup_url_kwarg = 'post_pk'
-    #     serializer_class = PostContentSerializer
-    #
-    #
-    #
-    # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
-    # permission_classes = (
-    #    IsAuthorOrReadOnly,
-    # )
+        # class PostDetailAPIView(generics.ListAPIView):
+        #     queryset = PostContent.objects.filter()
+        #     lookup_url_kwarg = 'post_pk'
+        #     serializer_class = PostContentSerializer
+        #
+        #
+        #
+        # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
+        # permission_classes = (
+        #    IsAuthorOrReadOnly,
+        # )
 
 
 class PostReplyListAPIView(generics.ListAPIView):
