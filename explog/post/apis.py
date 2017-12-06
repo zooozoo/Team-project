@@ -92,6 +92,10 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         #    IsAuthorOrReadOnly,
         # )
 
+class PostDeleteAPIView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    lookup_url_kwarg = 'post_pk'
+
 
 class PostReplyListAPIView(generics.ListAPIView):
     serializer_class = PostReplySerializer

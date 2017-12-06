@@ -32,7 +32,7 @@ CONTENT_CHOICES = (
 class PostContent(models.Model):
     post = models.ForeignKey(Post,related_name='content')
     content_type = models.CharField(max_length=4,choices=CONTENT_CHOICES)
-    order = models.IntegerField(default=0)
+    order = models.IntegerField(default=1)
 
 
 
