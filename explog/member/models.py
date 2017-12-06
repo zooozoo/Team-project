@@ -2,21 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-<<<<<<< HEAD
 class User(AbstractUser):
     username = models.CharField(
         max_length=11,
         blank=False,
         unique=True,
     )
-=======
 
-
-
-# settings.AUTH_USER_MODEL
-class User(AbstractUser):
-
->>>>>>> 97d27a04b2de33fee4c64e90f18973d58a5cb955
     img_profile = models.ImageField(
         upload_to='user',
         blank=True,
@@ -27,7 +19,6 @@ class User(AbstractUser):
         blank=False,
     )
     USERNAME_FIELD = 'email'
-<<<<<<< HEAD
     # createsuperuser 명령을 할 때 'username'을 물어보지 않아
     # 발생했던 오류를 잡기위해 'username'추가함
     REQUIRED_FIELDS = ['username']
@@ -61,6 +52,3 @@ class Relation(models.Model):
         return f'Relation (' \
                f'from: {self.from_user.username}, ' \
                f'to: {self.to_user.username})'
-=======
-    REQUIRED_FIELDS = ['username']
->>>>>>> 97d27a04b2de33fee4c64e90f18973d58a5cb955
