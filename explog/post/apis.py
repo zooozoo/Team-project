@@ -13,7 +13,6 @@ from .serializers import PostSerializer, PhotoListSerializer, PostReplySerialize
     PostPhotoSerializer, PostReplyCreateSerializer
 from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent, PostLike
 
-from utils.permissions import IsAuthorOrReadOnly
 
 
 class PostListAPIView(generics.ListAPIView):
