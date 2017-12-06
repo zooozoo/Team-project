@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 # 유저 모델 및 뷰 수정 요망
@@ -18,9 +19,21 @@ class Post(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
+    liked = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='PostLike',
+        related_name='liked_posts'
+    )
+    num_liked = models.IntegerField(default=0)
+
+    # 자신을 좋아요한 횟수를 num_liked 필드에 저장
+    def save_num_liked(self):
+        self.num_liked = self.liked.count()
+        self.save()
 
     class Meta:
         ordering = ['created_at']
+
 
 # 사진만 여러개를 한 PostContent 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
 CONTENT_CHOICES = (
@@ -122,3 +135,14 @@ class PostPath(models.Model):
 
     def __str__(self):
         return 'lat:{}, lng:{}'.format(self.lat,self.lng)
+
+class PostLike(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    liked_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author} liked {self.post}'
+
+    class Meta:
+        ordering = ['-liked_date']

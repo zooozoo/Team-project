@@ -6,13 +6,14 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.mixins import ListModelMixin
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .serializers import PostSerializer, PhotoListSerializer, PostReplySerializer, PostTextSerializer, \
     PostPathSerializer, PostDetailSerializer, PostListSerializer, PostContentSerializer, \
     PostPhotoSerializer, PostReplyCreateSerializer, PostContent1Serializer, PostContent2Serializer, \
     PostContent3Serializer
-from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent
+from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent, PostLike
 
 from utils.permissions import IsAuthorOrReadOnly
 
@@ -42,7 +43,7 @@ class PostCreateAPIView(generics.CreateAPIView):
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     lookup_url_kwarg = 'post_pk'
     queryset = Post.objects.all()
-    content_serializer=PostContentSerializer
+    content_serializer = PostContentSerializer
     text_serializer = PostTextSerializer
     photo_serializer = PostPhotoSerializer
     path_serializer = PostPathSerializer
@@ -54,27 +55,29 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         for queryset in post_content_queryset:
             if queryset.content_type == 'txt':
                 post_content_serializer = self.content_serializer(queryset)
-                text_qs=PostText.objects.get(post_content=queryset)
-                text_serializer=self.text_serializer(text_qs)
+                text_qs = PostText.objects.get(post_content=queryset)
+                text_serializer = self.text_serializer(text_qs)
 
                 data.update({
                     "post_content{}".format(queryset.pk): post_content_serializer.data,
-                    "matter{}".format(queryset.pk):text_serializer.data
+                    "matter{}".format(queryset.pk): text_serializer.data
                 })
 
             elif queryset.content_type == 'img':
                 post_content_serializer = self.content_serializer(queryset)
                 photo_qs = PostPhoto.objects.get(post_content=queryset)
-                photo_serializer=self.photo_serializer(photo_qs)
+                photo_serializer = self.photo_serializer(photo_qs)
 
-                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,"matter{}".format(queryset.pk):photo_serializer.data})
+                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,
+                             "matter{}".format(queryset.pk): photo_serializer.data})
 
             elif queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
-                path_qs=PostPath.objects.get(post_content=queryset)
-                path_serializer=self.path_serializer(path_qs)
+                path_qs = PostPath.objects.get(post_content=queryset)
+                path_serializer = self.path_serializer(path_qs)
 
-                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,"matter{}".format(queryset.pk):path_serializer.data})
+                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,
+                             "matter{}".format(queryset.pk): path_serializer.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -92,9 +95,11 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         #    IsAuthorOrReadOnly,
         # )
 
+
 class PostDeleteAPIView(generics.DestroyAPIView):
     queryset = Post.objects.all()
     lookup_url_kwarg = 'post_pk'
+    permission_classes = (IsAuthorOrReadOnly,)
 
 
 class PostReplyListAPIView(generics.ListAPIView):
@@ -120,9 +125,9 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
-    # permission_classes = (
-    #    IsAuthorOrReadOnly,
-    # )
+    permission_classes = (
+        IsAuthorOrReadOnly,
+    )
 
 
 class PostContentAPIView(generics.RetrieveDestroyAPIView):
@@ -136,11 +141,9 @@ class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
 
-
-# permission_classes = (
-#        IsAuthorOrReadOnly,
-#    )
-
+    permission_classes = (
+        IsAuthorOrReadOnly,
+    )
 
 
 class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -148,10 +151,10 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'
 
+    permission_classes = (
+        IsAuthorOrReadOnly,
+    )
 
-# permission_classes = (
-#       IsAuthorOrReadOnly,
-#  )
 
 class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPhoto.objects.all()
@@ -230,3 +233,42 @@ class PostPathCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
 
             serializer.save(post_content=post_content)
+
+
+# 포스트 좋아요 & 좋아요 취소 토글
+class PostLikeToggle(generics.GenericAPIView):
+    queryset = Post.objects.all()
+    lookup_url_kwarg = 'post_pk'
+    permission_classes = (
+        # 회원만 좋아요 가능
+        IsAuthenticatedOrReadOnly,
+    )
+
+    # /post/post_pk/like/ 에 POST 요청
+    def post(self, request, *args, **kwargs):
+        # pk 값으로 필터해서 Post 인스턴스 하나 가져옴
+        instance = self.get_object()
+        # 현재 로그인된 유저. AnonymousUser인 경우 permission에서 거름.
+        user = request.user
+
+        # 현재 로그인된 유저가 Post 인스턴스의 liked 목록에 있으면
+        if user in instance.liked.all():
+            # PostLike 테이블에서 해당 관계 삭제
+            liked = PostLike.objects.get(author_id=user.pk, post_id=instance.pk)
+            liked.delete()
+            instance.save_num_liked()  # Post의 num_liked 업데이트
+            instance.author.save_total_liked()  # User의 total_liked 업데이트
+
+        # 없으면
+        else:
+            # PostLike 테이블에서 관계 생성
+            PostLike.objects.create(author_id=user.pk, post_id=instance.pk)
+            instance.save_num_liked()  # Post의 num_liked 업데이트
+            instance.author.save_total_liked()  # User의 total_liked 업데이트
+
+        # 업데이트된 instance를 PostSerializer에 넣어 직렬화하여 응답으로 돌려줌
+        # serializer만 수정하면 될듯
+        data = {
+            "post": PostDetailSerializer(instance).data
+        }
+        return Response(data)

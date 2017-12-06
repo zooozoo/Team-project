@@ -26,6 +26,7 @@ DATABASES = config_secret["django"]["databases"]
 # allowed_hosts
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'localhost',
     '.elasticbeanstalk.com',
     '.locomoco.co.kr',
 ]

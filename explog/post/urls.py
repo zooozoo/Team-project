@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
-    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView
+    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView, PostLikeToggle
 
 urlpatterns = [
 
@@ -19,6 +19,6 @@ urlpatterns = [
     url(r'^path/(?P<path_pk>\d+)/$',PostPathAPIView.as_view(),name='post_path'),
     url(r'^(?P<post_pk>\d+)/photo/$',PostPhotoCreateAPIView.as_view(),name='post_photo_create'),
     url(r'^photo/(?P<photo_pk>\d+)/$',PostPhotoAPIView.as_view(),name='post_photo'),
-
+    url(r'^(?P<post_pk>\d+)/like/$', PostLikeToggle.as_view(), name='post_like'),
 
 ]

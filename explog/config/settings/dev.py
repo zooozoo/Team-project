@@ -3,11 +3,11 @@ from .base import *
 config_secret = json.loads(open(CONFIG_SECRET_DEV_FILE).read())
 # location, storages
 
-STATICFILES_STORAGE = 'config.storages.StaticStorage'
-STATICFILES_LOCATION = 'static'
-
-DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
-MEDIAFILES_LOCATION = 'media'
+# STATICFILES_STORAGE = 'config.storages.StaticStorage'
+# STATICFILES_LOCATION = 'static'
+#
+# DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
+# MEDIAFILES_LOCATION = 'media'
 
 # AWS
 

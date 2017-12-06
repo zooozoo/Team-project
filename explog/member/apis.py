@@ -1,10 +1,15 @@
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import LoginSerializer, SignupSerializer
+from .serializers import (
+    LoginSerializer,
+    SignupSerializer,
+    FollwingSerializer
+)
 
 
 class LoginView(APIView):
@@ -17,7 +22,6 @@ class LoginView(APIView):
         )
         if user:
             token, token_created = Token.objects.get_or_create(user=user)
-            print(LoginSerializer(user).data)
             data = {
                 'pk': LoginSerializer(user).data['pk'],
                 'username': LoginSerializer(user).data['username'],
@@ -27,14 +31,41 @@ class LoginView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
-            'message': 'email 혹은 비밀번호가 일치하지 않습니다.'
+
+            'message': 'Invalid credentials'
         }
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
 
+
 class Signup(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = SignupSerializer(data = request.data)
+        serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Follwing(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def post(self, request, *args, **kwargs):
+        data = {
+            'from_user': str(self.request.user.pk),
+            'to_user': request.data['to_user']
+        }
+        serializer = FollwingSerializer(
+            data=data,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data, status=status.HTTP_200_OK)
+        er_messege = list(serializer.errors.values())[0][0]
+        data = {
+            'error': er_messege
+        }
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)

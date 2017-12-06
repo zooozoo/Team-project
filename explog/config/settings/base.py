@@ -21,8 +21,8 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # instagram_project/.config_secret/
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, '.config_secret')
-CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_dev.json')
-CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR,'settings_deploy.json')
+CONFIG_SECRET_DEV_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_dev.json')
+CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_deploy.json')
 
 # instagram_project/instagram/media/
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
@@ -30,17 +30,17 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static_root')
 
-# instagram_project/instagram/static/
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
+#배포관련 에러 때문에 주석처리
+# STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
+#패포관련 에러때문에 주석처리
 # STATIC_URL로의 요청은 STATICFILES_DIRS경로의 목록에서 파일을 찾아 리턴
-STATICFILES_DIRS = [
-    STATIC_DIR,
-]
+# STATICFILES_DIRS = [
+#     STATIC_DIR,
+# ]
 # instagram_project/instagram/templates/
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -74,8 +74,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# member/user 관련 설정
 AUTH_USER_MODEL = 'member.User'
+
 
 # drf token auth를 사용하기 위한 설정
 REST_FRAMEWORK = {
@@ -85,9 +85,7 @@ REST_FRAMEWORK = {
     )
 }
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -103,7 +101,6 @@ INSTALLED_APPS = [
 
     'post',
     'member',
-
 ]
 
 MIDDLEWARE = [
@@ -121,7 +118,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [TEMPLATE_DIR, ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
