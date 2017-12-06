@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 # 유저 모델 및 뷰 수정 요망
@@ -18,9 +19,21 @@ class Post(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
+    liked = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='PostLike',
+        related_name='liked_posts'
+    )
+    num_liked = models.IntegerField(default=0)
+
+    # 자신을 좋아요한 횟수를 num_liked 필드에 저장
+    def save_num_liked(self):
+        self.num_liked = self.liked.count()
+        self.save()
 
     class Meta:
         ordering = ['created_at']
+
 
 # 사진만 여러개를 한 PostContent 객체의 pk를 공유해서 여러 객체를 한꺼번에 올리게 만들 것
 CONTENT_CHOICES = (
@@ -32,7 +45,7 @@ CONTENT_CHOICES = (
 class PostContent(models.Model):
     post = models.ForeignKey(Post,related_name='content')
     content_type = models.CharField(max_length=4,choices=CONTENT_CHOICES)
-    order = models.IntegerField(default=0)
+    order = models.IntegerField(default=1)
 
 
 
@@ -71,11 +84,16 @@ class PostText(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='text')
 
     class Meta:
         ordering = ['created_at']
 
+    def ___str__(self):
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
+
+    def __unicode__(self):
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
 
 # class PostPhotoGroup(models.Model):
 #     order = models.IntegerField()
@@ -90,18 +108,41 @@ class PostPhoto(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐
     # photo_group = models.ForeignKey(PostPhotoGroup)
-    post_content=models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content=models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='photo')
 
     class Meta:
         ordering = ['created_at']
 
+    def __unicode__(self):
+        return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
+
+    def __str__(self):
+        return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
+
 
 # 경로 테이블
 class PostPath(models.Model):
-    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()
 
     # class Meta:
     #     ordering = ['created_at']
+
+    def __unicode__(self):
+        return 'lat:{}, lng:{}'.format(self.lat,self.lng)
+
+    def __str__(self):
+        return 'lat:{}, lng:{}'.format(self.lat,self.lng)
+
+class PostLike(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    liked_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author} liked {self.post}'
+
+    class Meta:
+        ordering = ['-liked_date']

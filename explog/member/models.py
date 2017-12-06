@@ -18,6 +18,9 @@ class User(AbstractUser):
         unique=True,
         blank=False,
     )
+    # 총 좋아요 수
+    total_liked = models.IntegerField(default=0)
+
     USERNAME_FIELD = 'email'
     # createsuperuser 명령을 할 때 'username'을 물어보지 않아
     # 발생했던 오류를 잡기위해 'username'추가함
@@ -32,6 +35,13 @@ class User(AbstractUser):
         related_name='followers',
     )
 
+
+    # 유저의 모든 포스트들이 받은 좋아요 갯수를 총합하여 total_liked 필드에 저장
+    def save_total_liked(self, *args, **kwargs):
+        posts = self.post_set.all()
+        total_liked = sum([i.num_liked for i in posts])
+        self.total_liked = total_liked
+        self.save(*args, **kwargs)
 
 class Relation(models.Model):
     # 내가 팔로우 하는 사람

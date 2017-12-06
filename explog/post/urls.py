@@ -1,13 +1,14 @@
 from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
-    PostReplyCreateAPIView, PostPhotoAPIView
+    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView, PostLikeToggle
 
 urlpatterns = [
 
     url(r'^$', PostListAPIView.as_view(), name='post_list'),
     url(r'^create/',PostCreateAPIView.as_view(),name='post_create'),
     url(r'^(?P<post_pk>\d+)/$',PostDetailAPIView.as_view(), name='post_detail'),
+    url(r'^(?P<post_pk>\d+)/delete/$',PostDeleteAPIView.as_view(),name='post_delete'),
     url(r'^(?P<post_pk>\d+)/reply/$',PostReplyListAPIView.as_view(),name='post_reply'),
     url(r'^(?P<post_pk>\d+)/reply/create/$',PostReplyCreateAPIView.as_view(),name='post_reply_create'),
     url(r'^reply/(?P<reply_pk>\d+)/$',PostReplyUpdateAPIView.as_view(),name='post_reply_update'),
@@ -18,6 +19,6 @@ urlpatterns = [
     url(r'^path/(?P<path_pk>\d+)/$',PostPathAPIView.as_view(),name='post_path'),
     url(r'^(?P<post_pk>\d+)/photo/$',PostPhotoCreateAPIView.as_view(),name='post_photo_create'),
     url(r'^photo/(?P<photo_pk>\d+)/$',PostPhotoAPIView.as_view(),name='post_photo'),
-
+    url(r'^(?P<post_pk>\d+)/like/$', PostLikeToggle.as_view(), name='post_like'),
 
 ]
