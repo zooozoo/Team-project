@@ -28,7 +28,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
     # method필드가 아니라 릴레이션필드를 사용해야함.
-    #PostContent = serializers.StringRelatedField()
+
     class Meta:
         model = Post
         fields =(
@@ -41,7 +41,6 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
         )
-
 class PostContentSerializer(serializers.ModelSerializer):
 
     matter = serializers.SerializerMethodField()
@@ -78,6 +77,17 @@ class PostReplySerializer(serializers.ModelSerializer):
             'content',
             'created_at',
         )
+class PostReplyCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostReply
+        fields = (
+            'pk',
+            'content',
+            'created_at',
+        )
+
+
+
 
 class PostTextSerializer(serializers.ModelSerializer):
 
@@ -88,7 +98,7 @@ class PostTextSerializer(serializers.ModelSerializer):
             'title',
             'content',
             'created_at',
-            'post_content',
+
 
         )
 
@@ -101,7 +111,7 @@ class PostPhotoSerializer(serializers.ModelSerializer):
             'pk',
             'photo',
             'created_at',
-            'photo_group',
+
         )
 
 

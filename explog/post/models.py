@@ -19,10 +19,6 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at=models.DateTimeField(auto_now=True)
 
-
-
-
-
     class Meta:
         ordering = ['created_at']
 

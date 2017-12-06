@@ -1,11 +1,11 @@
 from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
-    PostReplyCreateAPIView
+    PostReplyCreateAPIView, PostPhotoAPIView
 
 urlpatterns = [
 
-    url(r'^/$', PostListAPIView.as_view(), name='post_list'),
+    url(r'^$', PostListAPIView.as_view(), name='post_list'),
     url(r'^create/',PostCreateAPIView.as_view(),name='post_create'),
     url(r'^(?P<post_pk>\d+)/$',PostDetailAPIView.as_view(), name='post_detail'),
     url(r'^(?P<post_pk>\d+)/reply/$',PostReplyListAPIView.as_view(),name='post_reply'),
@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^(?P<post_pk>\d+)/path/$',PostPathCreateAPIView.as_view(),name='post_path_create'),
     url(r'^path/(?P<path_pk>\d+)/$',PostPathAPIView.as_view(),name='post_path'),
     url(r'^(?P<post_pk>\d+)/photo/$',PostPhotoCreateAPIView.as_view(),name='post_photo_create'),
-
+    url(r'^photo/(?P<photo_pk>\d+)/$',PostPhotoAPIView.as_view(),name='post_photo'),
 
 
 ]

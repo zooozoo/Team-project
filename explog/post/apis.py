@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from .serializers import PostSerializer, PhotoListSerializer, PostReplySerializer, PostTextSerializer, \
     PostPathSerializer, PostDetailSerializer, PostListSerializer, PostContentSerializer, \
-     PostPhotoSerializer
+     PostPhotoSerializer, PostReplyCreateSerializer
 from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent
 
 from utils.permissions import IsAuthorOrReadOnly
@@ -65,7 +65,7 @@ class PostReplyListAPIView(generics.ListAPIView):
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostReplySerializer
+    serializer_class = PostReplyCreateSerializer
     lookup_url_kwarg = 'post_pk'
 
     def perform_create(self, serializer):
@@ -186,5 +186,6 @@ class PostPathCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
 
             serializer.save(post_content=post_content)
+
 
 
