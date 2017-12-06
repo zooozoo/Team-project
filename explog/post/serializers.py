@@ -10,7 +10,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields =(
+        fields = (
             'pk',
 
             'title',
@@ -18,8 +18,8 @@ class PostSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at',
 
-
         )
+
 
 # PostList 뷰에서 Post의 첫 번째 사진을 보여주기위한 시리얼라이저
 class PostListSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields =(
+        fields = (
             'pk',
             'author',
             'title',
@@ -39,11 +39,21 @@ class PostListSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at',
 
-
         )
-class PostContentSerializer(serializers.ModelSerializer):
 
-    matter = serializers.SerializerMethodField()
+
+class PostContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostContent
+        fields = (
+            'post',
+            'order',
+            'content_type',
+        )
+
+
+class PostContent1Serializer(serializers.ModelSerializer):
+    text = serializers.StringRelatedField()
 
     class Meta:
         model = PostContent
@@ -51,23 +61,40 @@ class PostContentSerializer(serializers.ModelSerializer):
             'post',
             'order',
             'content_type',
-            'matter',
-          )
+            'text',
+        )
 
-    def get_matter(self,obj):
-        type = obj.content_type
-        if type=='txt':
-            matter = PostTextSerializer(PostText.objects.filter(pk=obj.pk),many=True).data
-            return matter
-        elif type=='img':
-            matter = PostPhotoSerializer(PostPhoto.objects.filter(pk=obj.pk),many=True).data
-            return matter
-        elif type=='path':
-            matter = PostPathSerializer(PostPath.objects.filter(pk=obj.pk),many=True).data
-            return matter
+
+class PostContent2Serializer(serializers.ModelSerializer):
+    photo = serializers.StringRelatedField()
+
+    class Meta:
+        model = PostContent
+        fields = (
+            'post',
+            'order',
+            'content_type',
+            'photo',
+        )
+
+
+class PostContent3Serializer(serializers.ModelSerializer):
+    path = serializers.StringRelatedField()
+
+    class Meta:
+        model = PostContent
+        fields = (
+            'post',
+            'order',
+            'content_type',
+            'path',
+        )
+
+
 class PostReplySerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
+
     class Meta:
         model = PostReply
         fields = (
@@ -77,6 +104,8 @@ class PostReplySerializer(serializers.ModelSerializer):
             'content',
             'created_at',
         )
+
+
 class PostReplyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostReply
@@ -87,10 +116,7 @@ class PostReplyCreateSerializer(serializers.ModelSerializer):
         )
 
 
-
-
 class PostTextSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PostText
         fields = (
@@ -99,15 +125,13 @@ class PostTextSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
 
-
         )
 
 
 class PostPhotoSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PostPhoto
-        fields =(
+        fields = (
             'pk',
             'photo',
             'created_at',
@@ -115,27 +139,25 @@ class PostPhotoSerializer(serializers.ModelSerializer):
         )
 
 
-
-
 # PostPhoto 객체를 여러 개 받기 위한 시리얼라이저
 # 강사님께 트러블슈팅 요망
-class PhotoListSerializer ( serializers.Serializer ) :
+class PhotoListSerializer(serializers.Serializer):
     photo = serializers.ListField(
-                        # PostPhoto를 Image필드로 주었는데 여기서 Image필드인지 File필드인지 확인 필요
-                       child=serializers.FileField( max_length=100000,
-                                         allow_empty_file=False,
-                                         use_url=False )
-                                )
+        # PostPhoto를 Image필드로 주었는데 여기서 Image필드인지 File필드인지 확인 필요
+        child=serializers.FileField(max_length=100000,
+                                    allow_empty_file=False,
+                                    use_url=False)
+    )
+
     def create(self, validated_data):
-        content_group=PostContent.objects.latest('created_at')
-        photo=validated_data.pop('photo')
+        content_group = PostContent.objects.latest('created_at')
+        photo = validated_data.pop('photo')
         for img in photo:
-            photo=PostPhoto.objects.create(photo=img,content_group=content_group,**validated_data)
+            photo = PostPhoto.objects.create(photo=img, content_group=content_group, **validated_data)
         return photo
 
 
 class PostPathSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PostPath
         fields = (
@@ -144,14 +166,16 @@ class PostPathSerializer(serializers.ModelSerializer):
             'lng',
         )
 
+
 class PostDetailSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
     content = serializers.StringRelatedField(many=True)
     reply = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Post
-        fields =(
+        fields = (
             'pk',
             'author',
             'title',
@@ -162,7 +186,4 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'reply',
         )
 
-    #역참조 postreply.set relationfield
-
-
-
+        # 역참조 postreply.set relationfield

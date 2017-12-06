@@ -4,12 +4,14 @@ from rest_framework import permissions
 from rest_framework import status
 
 from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from .serializers import PostSerializer, PhotoListSerializer, PostReplySerializer, PostTextSerializer, \
     PostPathSerializer, PostDetailSerializer, PostListSerializer, PostContentSerializer, \
-     PostPhotoSerializer, PostReplyCreateSerializer
+    PostPhotoSerializer, PostReplyCreateSerializer, PostContent1Serializer, PostContent2Serializer, \
+    PostContent3Serializer
 from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent
 
 from utils.permissions import IsAuthorOrReadOnly
@@ -37,13 +39,41 @@ class PostCreateAPIView(generics.CreateAPIView):
         serializer.save(author=self.request.user)
 
 
-class PostDetailAPIView(generics.ListAPIView):
-    queryset = PostContent.objects.filter()
-    lookup_url_kwarg = 'post_pk'
-    serializer_class = PostContentSerializer
+class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
 
+    post_matter1_serializer = PostContent1Serializer
+    post_matter2_serializer = PostContent2Serializer
+    post_matter3_serializer = PostContent3Serializer
 
+    def list(self, request, *args, **kwargs):
+        data = {}
+        post_pk = self.get_object().pk
+        post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
+        for queryset in post_content_queryset:
+            if queryset.content_type == 'txt':
+                post_content_serializer = self.post_matter1_serializer(queryset)
+                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+
+            elif queryset.content_type == 'img':
+                post_content_serializer = self.post_matter2_serializer(queryset)
+                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+
+            elif queryset.content_type == 'path':
+                post_content_serializer = self.post_matter3_serializer(queryset)
+                data.update({"post_content{}".format(queryset.pk):post_content_serializer.data})
+        return Response(data)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    # class PostDetailAPIView(generics.ListAPIView):
+    #     queryset = PostContent.objects.filter()
+    #     lookup_url_kwarg = 'post_pk'
+    #     serializer_class = PostContentSerializer
+    #
+    #
+    #
     # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
     # permission_classes = (
     #    IsAuthorOrReadOnly,
@@ -51,16 +81,12 @@ class PostDetailAPIView(generics.ListAPIView):
 
 
 class PostReplyListAPIView(generics.ListAPIView):
-
-
     serializer_class = PostReplySerializer
 
     def get_queryset(self):
-        post_pk=self.kwargs['post_pk']
+        post_pk = self.kwargs['post_pk']
 
         return PostReply.objects.filter(post=post_pk)
-
-
 
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
@@ -80,6 +106,7 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes = (
     #    IsAuthorOrReadOnly,
     # )
+
 
 class PostContentAPIView(generics.RetrieveDestroyAPIView):
     queryset = PostContent.objects.all()
@@ -104,6 +131,7 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'
 
+
 # permission_classes = (
 #       IsAuthorOrReadOnly,
 #  )
@@ -112,7 +140,6 @@ class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PostPhoto.objects.all()
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'photo_pk'
-
 
 
 # PostPhoto create뷰는 트러블 슈팅 필요
@@ -186,6 +213,3 @@ class PostPathCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
 
             serializer.save(post_content=post_content)
-
-
-

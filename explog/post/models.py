@@ -71,11 +71,16 @@ class PostText(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
-    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='text')
 
     class Meta:
         ordering = ['created_at']
 
+    def ___str__(self):
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
+
+    def __unicode__(self):
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
 
 # class PostPhotoGroup(models.Model):
 #     order = models.IntegerField()
@@ -90,18 +95,30 @@ class PostPhoto(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐
     # photo_group = models.ForeignKey(PostPhotoGroup)
-    post_content=models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content=models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='photo')
 
     class Meta:
         ordering = ['created_at']
 
+    def __unicode__(self):
+        return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
+
+    def __str__(self):
+        return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
+
 
 # 경로 테이블
 class PostPath(models.Model):
-    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE)
+    post_content = models.ForeignKey(PostContent,on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()
 
     # class Meta:
     #     ordering = ['created_at']
+
+    def __unicode__(self):
+        return 'lat:{}, lng:{}'.format(self.lat,self.lng)
+
+    def __str__(self):
+        return 'lat:{}, lng:{}'.format(self.lat,self.lng)
