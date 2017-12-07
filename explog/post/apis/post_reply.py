@@ -6,6 +6,9 @@ from post.serializers import PostReplySerializer, PostReplyCreateSerializer
 
 
 class PostReplyListAPIView(generics.ListAPIView):
+    '''
+    여행기에 달린 댓글 모두 가져오는 API
+    '''
     serializer_class = PostReplySerializer
 
     def get_queryset(self):
@@ -15,6 +18,9 @@ class PostReplyListAPIView(generics.ListAPIView):
 
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
+    '''
+    여행기에 댓글을 다는 API
+    '''
     serializer_class = PostReplyCreateSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
@@ -31,6 +37,9 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
 
 
 class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    댓글 수정/삭제 API
+    '''
     queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'

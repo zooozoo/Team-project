@@ -14,12 +14,17 @@ class PostListAPIView(generics.ListAPIView):
     '''
     포스트를 리스트로 보여줄 때 첫 사진도 함께 보여줘야 함
     3일 이내 좋아요 순으로 보여주는 것 또한 구현해야 함
+    = 아직 구현하지 못함.
     '''
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
 
 
 class PostCreateAPIView(generics.CreateAPIView):
+    '''
+    Post 만드는 API
+
+    '''
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -33,6 +38,10 @@ class PostCreateAPIView(generics.CreateAPIView):
 
 
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
+    '''
+    여행기 내의 내용을 보여주기 위한 API
+    데이터 모델이 복잡한 관계로 로직이 복잡 - 트러블슈팅 필요
+    '''
     lookup_url_kwarg = 'post_pk'
     queryset = Post.objects.all()
 
@@ -90,6 +99,10 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
 
 class PostDeleteAPIView(generics.DestroyAPIView):
+    '''
+    여행기 하나를 삭제하기 위한 API
+
+    '''
     lookup_url_kwarg = 'post_pk'
 
     permission_classes = (
@@ -105,6 +118,9 @@ class PostDeleteAPIView(generics.DestroyAPIView):
 
 # 포스트 좋아요 & 좋아요 취소 토글
 class PostLikeToggle(generics.GenericAPIView):
+    '''
+    포스트에 좋아요를 누르기 위한 API
+    '''
     queryset = Post.objects.all()
     lookup_url_kwarg = 'post_pk'
     permission_classes = (

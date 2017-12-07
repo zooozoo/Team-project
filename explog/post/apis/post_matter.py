@@ -8,6 +8,9 @@ from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSe
 
 
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    여행기 내의 글 수정/삭제 API
+    '''
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
 
@@ -23,6 +26,9 @@ class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    여행 경로 레코드 수정/삭제 API
+    '''
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'
 
@@ -38,6 +44,9 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    여행기 내의 사진 수정/삭제 API
+    '''
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'photo_pk'
 
@@ -51,12 +60,19 @@ class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 # PostPhoto create뷰는 트러블 슈팅 필요
 class PostPhotolistView(viewsets.ModelViewSet):
+    '''
+    사진 여러 장 한번에 생성하기 위한 API - 미구현
+    '''
     serializer_class = PhotoListSerializer
     parser_classes = (MultiPartParser, FormParser,)
     queryset = PostPhoto.objects.all()
 
 
 class PostTextCreateAPIView(generics.CreateAPIView):
+    '''
+    여행기 내용 중 글 생성을 위한 API
+    연결된 PostContent 레코드까지 함께 생성
+    '''
     queryset = Post.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'post_pk'
@@ -82,6 +98,10 @@ class PostTextCreateAPIView(generics.CreateAPIView):
 
 
 class PostPhotoCreateAPIView(generics.CreateAPIView):
+    '''
+    여행기 내용 중 사진 생성을 위한 API
+    연결된 PostContent 레코드 함께 생성
+    '''
     queryset = Post.objects.all()
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'post_pk'
@@ -107,6 +127,10 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
 
 
 class PostPathCreateAPIView(generics.CreateAPIView):
+    '''
+    여행기 내용 중 경로 부분 생성을 위한 API
+    연결된 PostContent 레코드 함께 생성
+    '''
     queryset = Post.objects.all()
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'post_pk'
