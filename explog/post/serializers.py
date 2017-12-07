@@ -172,7 +172,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     content = serializers.StringRelatedField(many=True)
     reply = serializers.StringRelatedField(many=True)
-
+    like = serializers.StringRelatedField(many=True)
     class Meta:
         model = Post
         fields = (
@@ -184,6 +184,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'content',
             'reply',
+            'like',
         )
 
         # 역참조 postreply.set relationfield
+
+
+# 검색어를 받는 시리얼라이저 초안
+
+class PostSearchSerializer(serializers.Serializer):
+    search_word = serializers.CharField()

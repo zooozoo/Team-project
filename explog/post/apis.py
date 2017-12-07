@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from .serializers import PostSerializer, PhotoListSerializer, PostReplySerializer, PostTextSerializer, \
     PostPathSerializer, PostDetailSerializer, PostListSerializer, PostContentSerializer, \
-    PostPhotoSerializer, PostReplyCreateSerializer
+    PostPhotoSerializer, PostReplyCreateSerializer, PostSearchSerializer
 from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent, PostLike
 
 
@@ -38,7 +38,7 @@ class PostCreateAPIView(generics.CreateAPIView):
 
 
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     queryset = Post.objects.all()
     content_serializer = PostContentSerializer
     text_serializer = PostTextSerializer
@@ -94,14 +94,14 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
 
 class PostDeleteAPIView(generics.DestroyAPIView):
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
 
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
 
     def get_object(self):
-        instance = Post.objects.get(pk=self.kwargs['pk'])
+        instance = Post.objects.get(pk=self.kwargs['post_pk'])
 
         return instance
 
@@ -110,14 +110,14 @@ class PostReplyListAPIView(generics.ListAPIView):
     serializer_class = PostReplySerializer
 
     def get_queryset(self):
-        post_pk = self.kwargs['pk']
+        post_pk = self.kwargs['post_pk']
 
         return PostReply.objects.filter(post=post_pk)
 
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
     serializer_class = PostReplyCreateSerializer
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
@@ -201,7 +201,7 @@ class PostPhotolistView(viewsets.ModelViewSet):
 class PostTextCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostTextSerializer
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
@@ -226,7 +226,7 @@ class PostTextCreateAPIView(generics.CreateAPIView):
 class PostPhotoCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostPhotoSerializer
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
@@ -251,7 +251,7 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
 class PostPathCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostPathSerializer
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
@@ -276,12 +276,15 @@ class PostPathCreateAPIView(generics.CreateAPIView):
 # 포스트 좋아요 & 좋아요 취소 토글
 class PostLikeToggle(generics.GenericAPIView):
     queryset = Post.objects.all()
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'post_pk'
     permission_classes = (
         # 회원만 좋아요 가능
         IsAuthenticatedOrReadOnly,
     )
 
+    def get_object(self):
+        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        return instance
     # /post/post_pk/like/ 에 POST 요청
     def post(self, request, *args, **kwargs):
         # pk 값으로 필터해서 Post 인스턴스 하나 가져옴
@@ -310,3 +313,5 @@ class PostLikeToggle(generics.GenericAPIView):
             "post": PostDetailSerializer(instance).data
         }
         return Response(data)
+
+
