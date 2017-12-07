@@ -1,7 +1,6 @@
 # Create your views here.
 from rest_framework import generics
 from rest_framework import permissions
-from rest_framework import status
 
 from rest_framework import viewsets
 from rest_framework.mixins import ListModelMixin
@@ -11,11 +10,9 @@ from rest_framework.response import Response
 
 from .serializers import PostSerializer, PhotoListSerializer, PostReplySerializer, PostTextSerializer, \
     PostPathSerializer, PostDetailSerializer, PostListSerializer, PostContentSerializer, \
-    PostPhotoSerializer, PostReplyCreateSerializer, PostContent1Serializer, PostContent2Serializer, \
-    PostContent3Serializer
+    PostPhotoSerializer, PostReplyCreateSerializer, PostSearchSerializer
 from .models import Post, PostPhoto, PostReply, PostText, PostPath, PostContent, PostLike
 
-from utils.permissions import IsAuthorOrReadOnly
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -97,9 +94,16 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
 
 class PostDeleteAPIView(generics.DestroyAPIView):
-    queryset = Post.objects.all()
     lookup_url_kwarg = 'post_pk'
-    permission_classes = (IsAuthorOrReadOnly,)
+
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
+
+    def get_object(self):
+        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+
+        return instance
 
 
 class PostReplyListAPIView(generics.ListAPIView):
@@ -112,12 +116,18 @@ class PostReplyListAPIView(generics.ListAPIView):
 
 
 class PostReplyCreateAPIView(generics.CreateAPIView):
-    queryset = Post.objects.all()
     serializer_class = PostReplyCreateSerializer
     lookup_url_kwarg = 'post_pk'
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
+
+    def get_queryset(self):
+        pk = self.kwargs.get(self.lookup_url_kwarg)
+        return pk
 
     def perform_create(self, serializer):
-        instance = self.get_object()
+        instance = Post.objects.get(pk=self.get_queryset())
         serializer.save(author=self.request.user, post=instance)
 
 
@@ -126,7 +136,7 @@ class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
     permission_classes = (
-        IsAuthorOrReadOnly,
+        permissions.IsAuthenticatedOrReadOnly,
     )
 
 
@@ -134,32 +144,51 @@ class PostContentAPIView(generics.RetrieveDestroyAPIView):
     queryset = PostContent.objects.all()
     serializer_class = PostContentSerializer
     lookup_url_kwarg = 'content_pk'
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
 
 
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PostText.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'text_pk'
 
     permission_classes = (
-        IsAuthorOrReadOnly,
+        permissions.IsAuthenticatedOrReadOnly,
     )
+
+    def get_object(self):
+
+        instance = PostText.objects.get(pk=self.kwargs['text_pk'])
+
+        return instance
 
 
 class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PostPath.objects.all()
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'path_pk'
 
     permission_classes = (
-        IsAuthorOrReadOnly,
+        permissions.IsAuthenticatedOrReadOnly,
     )
+
+    def get_object(self):
+
+        instance = PostPath.objects.get(pk=self.kwargs['path_pk'])
+
+        return instance
 
 
 class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PostPhoto.objects.all()
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'photo_pk'
+
+    def get_object(self):
+
+
+        instance = PostPhoto.objects.get(pk=self.kwargs['photo_pk'])
+
+        return instance
 
 
 # PostPhoto create뷰는 트러블 슈팅 필요
@@ -173,6 +202,9 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'post_pk'
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
 
     def perform_create(self, serializer):
 
@@ -195,6 +227,9 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'post_pk'
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
 
     def perform_create(self, serializer):
 
@@ -217,6 +252,9 @@ class PostPathCreateAPIView(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'post_pk'
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
 
     def perform_create(self, serializer):
 
@@ -244,6 +282,9 @@ class PostLikeToggle(generics.GenericAPIView):
         IsAuthenticatedOrReadOnly,
     )
 
+    def get_object(self):
+        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        return instance
     # /post/post_pk/like/ 에 POST 요청
     def post(self, request, *args, **kwargs):
         # pk 값으로 필터해서 Post 인스턴스 하나 가져옴
@@ -272,3 +313,5 @@ class PostLikeToggle(generics.GenericAPIView):
             "post": PostDetailSerializer(instance).data
         }
         return Response(data)
+
+

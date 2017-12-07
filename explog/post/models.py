@@ -52,6 +52,9 @@ class PostContent(models.Model):
 
     def __str__(self):
         return '{} ,{}, {}'.format(self.post,self.content_type,self.order)
+    def __unicode__(self):
+        return '{} ,{}, {}'.format(self.post,self.content_type,self.order)
+
     class Meta:
         ordering = ['order']
 
@@ -73,7 +76,8 @@ class PostReply(models.Model):
 
     class Meta:
         ordering = ['created_at']
-
+    def __unicode__(self):
+        return '{},{},{}'.format(self.author,self.content,self.created_at)
 
 # 글 하나 테이블
 class PostText(models.Model):
@@ -138,7 +142,7 @@ class PostPath(models.Model):
 
 class PostLike(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,related_name='like')
     liked_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
