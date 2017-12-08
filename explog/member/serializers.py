@@ -1,6 +1,7 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from rest_framework.validators import UniqueValidator
 
 from member.models import User, Relation
 
@@ -99,3 +100,34 @@ class FollwingSerializer(serializers.Serializer):
                 raise serializers.ValidationError('이미 follow하고 있습니다.')
             return data
         raise serializers.ValidationError('존재하지 않는 user')
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'img_profile',
+        )
+
+    def update(self, instance, validated_data):
+        self.instance.username = validated_data.get('username', instance.username)
+        self.instance.img_profile = validated_data.get('img_profile', instance.img_profile)
+        instance.save()
+        return instance
+
+
+class UserPasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
+
+    def validate_old_password(self, data):
+        user = self.context['request'].user
+        if user.check_password(data):
+            return data
+        raise serializers.ValidationError('잘못된 비밀번호 입니다.')
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance

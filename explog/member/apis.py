@@ -1,15 +1,21 @@
-from rest_framework import status
+from django.contrib.auth import get_user_model
+from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import (
     LoginSerializer,
     SignupSerializer,
-    FollwingSerializer
+    FollwingSerializer,
+    UserProfileUpdateSerializer,
+    UserPasswordUpdateSerializer,
 )
+
+User = get_user_model()
 
 
 class LoginView(APIView):
@@ -70,3 +76,30 @@ class Follwing(APIView):
         }
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserProfileUpdate(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        serializer = UserProfileUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.update(user, validated_data=serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_200_OK)
+
+
+class UserPasswordUpdate(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request, *args, **kwargs):
+        serializer = UserPasswordUpdateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.update(request.user, validated_data=serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
