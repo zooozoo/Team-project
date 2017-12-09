@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike
+from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer
 
@@ -18,6 +19,7 @@ class PostListAPIView(generics.ListAPIView):
     '''
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
+    pagination_class = PostListPagination
 
 
 class PostCreateAPIView(generics.CreateAPIView):

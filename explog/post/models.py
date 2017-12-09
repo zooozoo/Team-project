@@ -4,6 +4,16 @@ from django.db import models
 
 User = get_user_model()
 
+CONTINENT_CHOICES = (
+    ("1","Asia"),
+    ("2","Europe"),
+    ("3","North America"),
+    ("4","South America"),
+    ("5","Africa"),
+    ("6","Oceania"),
+)
+
+
 
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
@@ -21,6 +31,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
+    # 여행기 대륙별 구분을 위한 필드
+    continent= models.CharField(choices=CONTINENT_CHOICES)
+    # 좋아요 갯수를 표현하기 위한 필드
     liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='PostLike',
@@ -89,8 +102,6 @@ class PostReply(models.Model):
 
 # 글 하나 테이블
 class PostText(models.Model):
-    # 여행기 자체의 제목과 구분해야 함
-    title = models.CharField(max_length=255)
     # 글의 내용
     content = models.TextField()
     # 작성시점
