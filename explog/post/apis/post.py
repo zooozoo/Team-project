@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike
 from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
-    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer
+    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -177,3 +177,11 @@ class PostLikeToggle(generics.GenericAPIView):
             "post": PostDetailSerializer(instance).data
         }
         return Response(data)
+
+
+class PostSearchAPIView(generics.GenericAPIView):
+    serializer_class = PostSearchSerializer
+    def post(self,request):
+        word=request.data['word']
+        qs=Post.objects.filter(title=word)
+        return Response(PostListSerializer(qs,many=True),)
