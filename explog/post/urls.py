@@ -1,11 +1,12 @@
 from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
-    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView, PostLikeToggle
+    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView, PostLikeToggle, PostCategoryListAPIView
 
 urlpatterns = [
 
     url(r'^$', PostListAPIView.as_view(), name='post_list'),
+    url(r'(?P<category>\d+)/list/$',PostCategoryListAPIView.as_view(),name='post_category_list'),
     url(r'^create/',PostCreateAPIView.as_view(),name='post_create'),
     url(r'^(?P<post_pk>\d+)/$',PostDetailAPIView.as_view(), name='post_detail'),
     url(r'^(?P<post_pk>\d+)/delete/$',PostDeleteAPIView.as_view(),name='post_delete'),

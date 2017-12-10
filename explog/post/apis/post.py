@@ -22,6 +22,16 @@ class PostListAPIView(generics.ListAPIView):
     pagination_class = PostListPagination
 
 
+class PostCategoryListAPIView(generics.ListAPIView):
+    serializer_class = PostListSerializer
+    pagination_class = PostListPagination
+    lookup_url_kwarg = 'category'
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(continent=self.kwargs['category'])
+        return queryset
+
+
 class PostCreateAPIView(generics.CreateAPIView):
     '''
     Post 만드는 API
@@ -61,27 +71,31 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 post_content_serializer = self.content_serializer(queryset)
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
+                post_content_serializer.data.update({"matter{}".format(queryset.pk): text_serializer.data})
+                data.update(
+                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
 
-                data.update({
-                    "post_content{}".format(queryset.pk): post_content_serializer.data,
-                    "matter{}".format(queryset.pk): text_serializer.data
-                })
+                )
 
             elif queryset.content_type == 'img':
                 post_content_serializer = self.content_serializer(queryset)
                 photo_qs = PostPhoto.objects.get(post_content=queryset)
                 photo_serializer = self.photo_serializer(photo_qs)
 
-                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,
-                             "matter{}".format(queryset.pk): photo_serializer.data})
+                post_content_serializer.data.update({"matter{}".format(queryset.pk): photo_serializer.data})
+                data.update(
+                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
 
+                )
             elif queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
                 path_serializer = self.path_serializer(path_qs)
+                post_content_serializer.data.update({"matter{}".format(queryset.pk): path_serializer.data})
+                data.update(
+                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
 
-                data.update({"post_content{}".format(queryset.pk): post_content_serializer.data,
-                             "matter{}".format(queryset.pk): path_serializer.data})
+                )
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -117,7 +131,6 @@ class PostDeleteAPIView(generics.DestroyAPIView):
         return instance
 
 
-
 # 포스트 좋아요 & 좋아요 취소 토글
 class PostLikeToggle(generics.GenericAPIView):
     '''
@@ -133,6 +146,7 @@ class PostLikeToggle(generics.GenericAPIView):
     def get_object(self):
         instance = Post.objects.get(pk=self.kwargs['post_pk'])
         return instance
+
     # /post/post_pk/like/ 에 POST 요청
     def post(self, request, *args, **kwargs):
         # pk 값으로 필터해서 Post 인스턴스 하나 가져옴
