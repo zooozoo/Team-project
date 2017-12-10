@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from member.models import Relation
 from .serializers import (
     LoginSerializer,
     SignupSerializer,
@@ -68,8 +69,20 @@ class Follwing(APIView):
             context={'request': request}
         )
         if serializer.is_valid():
-            serializer.save()
+            # validated_data를 통해 해당 user 객체 생성
+            from_user = User.objects.get(pk=serializer.validated_data['from_user'])
+            to_user = User.objects.get(pk=serializer.validated_data['to_user'])
+            # from_user가 이미 to_user를 follow 하고 있을 경우 follow취소
+            if from_user.following_users.filter(pk=to_user.pk).exists():
+                from_user.following_user_relations.get(to_user=to_user).delete()
+                data = {
+                    'unfollowing': serializer.validated_data['to_user']
+                }
+                return Response(data, status=status.HTTP_200_OK)
+            # from_user가 to_user를 follow하고 있지 않은 경우 관계 생성
+            Relation.objects.create(from_user=from_user, to_user=to_user,)
             return Response(data, status=status.HTTP_200_OK)
+        # validation error가 발생 했을 경우 에러 메시지 가공
         er_messege = list(serializer.errors.values())[0][0]
         data = {
             'error': er_messege

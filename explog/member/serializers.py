@@ -80,26 +80,13 @@ class FollwingSerializer(serializers.Serializer):
     from_user = serializers.IntegerField()
     to_user = serializers.IntegerField()
 
-    def create(self, validated_data):
-        to_user = User.objects.get(pk=validated_data['to_user'])
-        from_user = User.objects.get(pk=validated_data['from_user'])
-        return Relation.objects.create(
-            from_user=from_user,
-            to_user=to_user,
-        )
-
     def validate(self, data):
         if data['from_user'] == data['to_user']:
             raise serializers.ValidationError('자기 자신을 follow할 수 없습니다.')
         return data
 
     def validate_to_user(self, data):
-        request_user = User.objects.get(pk=self.context['request'].user.pk)
         if User.objects.filter(pk=data).exists():
-            to_user = User.objects.get(pk=data)
-            if request_user.following_users.filter(pk=data).exists():
-                request_user.following_user_relations.get(to_user=to_user).delete()
-                raise serializers.ValidationError('follow 취소')
             return data
         raise serializers.ValidationError('존재하지 않는 user')
 
