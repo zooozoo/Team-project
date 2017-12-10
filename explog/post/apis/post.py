@@ -183,5 +183,7 @@ class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
     def post(self,request):
         word=request.data['word']
+        # 쿼리는 구현해야 할듯
         qs=Post.objects.filter(title=word)
-        return Response(PostListSerializer(qs,many=True),)
+        print(qs)
+        return Response(PostListSerializer(qs,many=True).data,)

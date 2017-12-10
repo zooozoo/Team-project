@@ -68,4 +68,4 @@ class PostDetailSerializer(serializers.ModelSerializer):
 # 검색어를 받는 시리얼라이저 초안
 
 class PostSearchSerializer(serializers.Serializer):
-    search_word = serializers.CharField()
+    word = serializers.CharField()
