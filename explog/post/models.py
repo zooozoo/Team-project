@@ -32,7 +32,7 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 대륙별 구분을 위한 필드
-    continent= models.CharField(choices=CONTINENT_CHOICES)
+    continent= models.CharField(choices=CONTINENT_CHOICES, max_length=20)
     # 좋아요 갯수를 표현하기 위한 필드
     liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

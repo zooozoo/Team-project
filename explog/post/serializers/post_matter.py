@@ -8,7 +8,7 @@ class PostTextSerializer(serializers.ModelSerializer):
         model = PostText
         fields = (
             'pk',
-            'title',
+
             'content',
             'created_at',
 

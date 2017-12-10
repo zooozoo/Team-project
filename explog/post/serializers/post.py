@@ -17,6 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
             'start_date',
             'end_date',
             'created_at',
+            'continent',
 
         )
 

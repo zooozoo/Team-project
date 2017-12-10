@@ -71,9 +71,10 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 post_content_serializer = self.content_serializer(queryset)
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
-                post_content_serializer.data.update({"matter{}".format(queryset.pk): text_serializer.data})
+                dic = post_content_serializer.data
+                dic.update({'text{}'.format(queryset.pk):text_serializer.data})
                 data.update(
-                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
+                    {"post_content{}".format(queryset.pk): dic}
 
                 )
 
@@ -81,19 +82,20 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 post_content_serializer = self.content_serializer(queryset)
                 photo_qs = PostPhoto.objects.get(post_content=queryset)
                 photo_serializer = self.photo_serializer(photo_qs)
-
-                post_content_serializer.data.update({"matter{}".format(queryset.pk): photo_serializer.data})
+                dic = post_content_serializer.data
+                dic.update({"photo{}".format(queryset.pk): photo_serializer.data})
                 data.update(
-                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
+                    {"post_content{}".format(queryset.pk): dic}
 
                 )
             elif queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
                 path_serializer = self.path_serializer(path_qs)
-                post_content_serializer.data.update({"matter{}".format(queryset.pk): path_serializer.data})
+                dic=post_content_serializer.data
+                dic.update({"path{}".format(queryset.pk): path_serializer.data})
                 data.update(
-                    {"post_content{}".format(queryset.pk): post_content_serializer.data}
+                    {"post_content{}".format(queryset.pk): dic}
 
                 )
         return Response(data)
