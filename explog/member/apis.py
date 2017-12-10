@@ -91,7 +91,11 @@ class UserProfileUpdate(APIView):
         if serializer.is_valid():
             serializer.update(user, validated_data=serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_200_OK)
+        er_messege = list(serializer.errors.values())[0][0]
+        data = {
+            'error': er_messege
+        }
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserPasswordUpdate(APIView):
@@ -101,5 +105,12 @@ class UserPasswordUpdate(APIView):
         serializer = UserPasswordUpdateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.update(request.user, validated_data=serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            data = {
+                'success': 'password가 변경되었습니다.'
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        er_messege = list(serializer.errors.values())[0][0]
+        data = {
+            'error': er_messege
+        }
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)

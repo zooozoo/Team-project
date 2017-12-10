@@ -96,8 +96,10 @@ class FollwingSerializer(serializers.Serializer):
     def validate_to_user(self, data):
         request_user = User.objects.get(pk=self.context['request'].user.pk)
         if User.objects.filter(pk=data).exists():
+            to_user = User.objects.get(pk=data)
             if request_user.following_users.filter(pk=data).exists():
-                raise serializers.ValidationError('이미 follow하고 있습니다.')
+                request_user.following_user_relations.get(to_user=to_user).delete()
+                raise serializers.ValidationError('follow 취소')
             return data
         raise serializers.ValidationError('존재하지 않는 user')
 
@@ -118,8 +120,8 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserPasswordUpdateSerializer(serializers.Serializer):
-    old_password = serializers.CharField()
-    new_password = serializers.CharField()
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
 
     def validate_old_password(self, data):
         user = self.context['request'].user
