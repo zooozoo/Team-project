@@ -14,6 +14,7 @@ from .serializers import (
     FollwingSerializer,
     UserProfileUpdateSerializer,
     UserPasswordUpdateSerializer,
+    FollowingFollowerListSerializer,
 )
 
 User = get_user_model()
@@ -74,13 +75,13 @@ class Follwing(APIView):
             to_user = User.objects.get(pk=serializer.validated_data['to_user'])
             # from_user가 이미 to_user를 follow 하고 있을 경우 follow취소
             if from_user.following_users.filter(pk=to_user.pk).exists():
-                from_user.following_user_relations.get(to_user=to_user).delete()
+                from_user.following_relations.get(to_user=to_user).delete()
                 data = {
-                    'unfollowing': serializer.validated_data['to_user']
+                    'unfollowing': str(serializer.validated_data['to_user'])
                 }
                 return Response(data, status=status.HTTP_200_OK)
             # from_user가 to_user를 follow하고 있지 않은 경우 관계 생성
-            Relation.objects.create(from_user=from_user, to_user=to_user,)
+            Relation.objects.create(from_user=from_user, to_user=to_user, )
             return Response(data, status=status.HTTP_200_OK)
         # validation error가 발생 했을 경우 에러 메시지 가공
         er_messege = list(serializer.errors.values())[0][0]
@@ -88,6 +89,18 @@ class Follwing(APIView):
             'error': er_messege
         }
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FollowingFollowerList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = FollowingFollowerListSerializer(
+            user,
+            context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 class UserProfileUpdate(APIView):

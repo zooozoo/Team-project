@@ -120,3 +120,35 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
         instance.set_password(validated_data['new_password'])
         instance.save()
         return instance
+
+
+class RelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Relation
+        fields = '__all__'
+
+
+class FollowingFollowerListSerializer(serializers.ModelSerializer):
+    following_relations = RelationSerializer(many=True, read_only=True)
+    follower_relations = RelationSerializer(many=True, read_only=True)
+    following_number = serializers.SerializerMethodField()
+    follower_number = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'following_number',
+            'follower_number',
+            'following_relations',
+            'follower_relations',
+        )
+
+    def get_following_number(self, obj):
+        user = self.context['request'].user
+        return user.following_relations.count()
+
+    def get_follower_number(self, obj):
+        user = self.context['request'].user
+        return user.follower_relations.count()
