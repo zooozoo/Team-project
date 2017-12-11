@@ -63,7 +63,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     path_serializer = PostPathSerializer
 
     def list(self, request, *args, **kwargs):
-        data = {}
+        data = {"post_content":[]}
         post_pk = self.get_object().pk
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
@@ -72,9 +72,9 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
                 dic = post_content_serializer.data
-                dic.update({'text{}'.format(queryset.pk):text_serializer.data})
-                data.update(
-                    {"post_content{}".format(queryset.pk): dic}
+                dic.update({'content'.format(queryset.pk):text_serializer.data})
+                data["post_content"].append(
+                    dic
 
                 )
 
@@ -83,9 +83,9 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 photo_qs = PostPhoto.objects.get(post_content=queryset)
                 photo_serializer = self.photo_serializer(photo_qs)
                 dic = post_content_serializer.data
-                dic.update({"photo{}".format(queryset.pk): photo_serializer.data})
-                data.update(
-                    {"post_content{}".format(queryset.pk): dic}
+                dic.update({"content".format(queryset.pk): photo_serializer.data})
+                data["post_content"].append(
+                    dic
 
                 )
             elif queryset.content_type == 'path':
@@ -93,9 +93,9 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 path_qs = PostPath.objects.get(post_content=queryset)
                 path_serializer = self.path_serializer(path_qs)
                 dic=post_content_serializer.data
-                dic.update({"path{}".format(queryset.pk): path_serializer.data})
-                data.update(
-                    {"post_content{}".format(queryset.pk): dic}
+                dic.update({"content".format(queryset.pk): path_serializer.data})
+                data["post_content"].append(
+                    dic
 
                 )
 
