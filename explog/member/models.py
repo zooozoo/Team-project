@@ -42,6 +42,7 @@ class User(AbstractUser):
         self.total_liked = total_liked
         self.save(*args, **kwargs)
 
+
 class Relation(models.Model):
     # 내가 팔로우 하는 사람
     from_user = models.ForeignKey(

@@ -72,7 +72,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
                 dic = post_content_serializer.data
-                dic.update({'text{}'.format(queryset.pk):text_serializer.data})
+                dic.update({'text{}'.format(queryset.pk): text_serializer.data})
                 data.update(
                     {"post_content{}".format(queryset.pk): dic}
 
@@ -92,15 +92,15 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
                 path_serializer = self.path_serializer(path_qs)
-                dic=post_content_serializer.data
+                dic = post_content_serializer.data
                 dic.update({"path{}".format(queryset.pk): path_serializer.data})
                 data.update(
                     {"post_content{}".format(queryset.pk): dic}
 
                 )
 
-        #reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
-        #data.update({"post_reply":reply.data})
+        # reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
+        # data.update({"post_reply":reply.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -184,11 +184,10 @@ class PostLikeToggle(generics.GenericAPIView):
 
 class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
-    def post(self,request):
-        word=request.data['word']
+
+    def post(self, request):
+        word = request.data['word']
         # 쿼리는 구현해야 할듯
-        qs=Post.objects.filter(title__contains=word)
+        qs = Post.objects.filter(title__contains=word)
 
-        return Response(PostListSerializer(qs,many=True).data,)
-
-
+        return Response(PostListSerializer(qs, many=True).data, )

@@ -5,9 +5,8 @@ from rest_framework.validators import UniqueValidator
 
 from member.models import User, Relation
 
-
 # 유저정보를 가지고 오기 위한 serializer, test create 할 때 필요해서 만들었음
-from post.models import Post
+from post.models import Post, PostLike
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -125,11 +124,6 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
         return instance
 
 
-class RelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Relation
-        fields = '__all__'
-
 class PostSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
 
@@ -145,13 +139,19 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
 
+class LikedPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
-    following_relations = RelationSerializer(many=True, read_only=True)
-    follower_relations = RelationSerializer(many=True, read_only=True)
+    following_users = UserSerializer(many=True, read_only=True)
+    followers = UserSerializer(many=True, read_only=True)
     following_number = serializers.SerializerMethodField()
     follower_number = serializers.SerializerMethodField()
     posts = PostSerializer(many=True, read_only=True)
-
+    liked_posts = LikedPostSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -162,9 +162,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'img_profile',
             'following_number',
             'follower_number',
-            'following_relations',
-            'follower_relations',
-            'posts'
+            'following_users',
+            'followers',
+            'posts',
+            'liked_posts',
         )
 
     def get_following_number(self, obj):
