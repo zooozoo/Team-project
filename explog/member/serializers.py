@@ -1,12 +1,11 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from rest_framework.validators import UniqueValidator
 
-from member.models import User, Relation
+from member.models import User
 
 # 유저정보를 가지고 오기 위한 serializer, test create 할 때 필요해서 만들었음
-from post.models import Post, PostLike
+from post.models import Post
 
 
 class UserSerializer(serializers.ModelSerializer):
