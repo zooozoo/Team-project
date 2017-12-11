@@ -190,3 +190,5 @@ class PostSearchAPIView(generics.GenericAPIView):
         qs=Post.objects.filter(title__contains=word)
 
         return Response(PostListSerializer(qs,many=True).data,)
+
+

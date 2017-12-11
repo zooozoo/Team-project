@@ -47,7 +47,7 @@ class Relation(models.Model):
     from_user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following_user_relations',
+        related_name='following_relations',
     )
 
     # 나를 팔로우 하는 사람

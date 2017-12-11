@@ -1,6 +1,7 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from rest_framework.validators import UniqueValidator
 
 from member.models import User, Relation
 
@@ -79,23 +80,75 @@ class FollwingSerializer(serializers.Serializer):
     from_user = serializers.IntegerField()
     to_user = serializers.IntegerField()
 
-    def create(self, validated_data):
-        to_user = User.objects.get(pk=validated_data['to_user'])
-        from_user = User.objects.get(pk=validated_data['from_user'])
-        return Relation.objects.create(
-            from_user=from_user,
-            to_user=to_user,
-        )
-
     def validate(self, data):
         if data['from_user'] == data['to_user']:
             raise serializers.ValidationError('자기 자신을 follow할 수 없습니다.')
         return data
 
     def validate_to_user(self, data):
-        request_user = User.objects.get(pk=self.context['request'].user.pk)
         if User.objects.filter(pk=data).exists():
-            if request_user.following_users.filter(pk=data).exists():
-                raise serializers.ValidationError('이미 follow하고 있습니다.')
             return data
         raise serializers.ValidationError('존재하지 않는 user')
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'img_profile',
+        )
+
+    def update(self, instance, validated_data):
+        self.instance.username = validated_data.get('username', instance.username)
+        self.instance.img_profile = validated_data.get('img_profile', instance.img_profile)
+        instance.save()
+        return instance
+
+
+class UserPasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate_old_password(self, data):
+        user = self.context['request'].user
+        if user.check_password(data):
+            return data
+        raise serializers.ValidationError('잘못된 비밀번호 입니다.')
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
+
+
+class RelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Relation
+        fields = '__all__'
+
+
+class FollowingFollowerListSerializer(serializers.ModelSerializer):
+    following_relations = RelationSerializer(many=True, read_only=True)
+    follower_relations = RelationSerializer(many=True, read_only=True)
+    following_number = serializers.SerializerMethodField()
+    follower_number = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'following_number',
+            'follower_number',
+            'following_relations',
+            'follower_relations',
+        )
+
+    def get_following_number(self, obj):
+        user = self.context['request'].user
+        return user.following_relations.count()
+
+    def get_follower_number(self, obj):
+        user = self.context['request'].user
+        return user.follower_relations.count()
