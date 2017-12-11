@@ -7,6 +7,9 @@ from member.models import User, Relation
 
 
 # 유저정보를 가지고 오기 위한 serializer, test create 할 때 필요해서 만들었음
+from post.models import Post
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -127,22 +130,41 @@ class RelationSerializer(serializers.ModelSerializer):
         model = Relation
         fields = '__all__'
 
+class PostSerializer(serializers.ModelSerializer):
+    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
 
-class FollowingFollowerListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'pk',
+            'title',
+            'start_date',
+            'end_date',
+            'created_at',
+            'continent',
+        )
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
     following_relations = RelationSerializer(many=True, read_only=True)
     follower_relations = RelationSerializer(many=True, read_only=True)
     following_number = serializers.SerializerMethodField()
     follower_number = serializers.SerializerMethodField()
+    posts = PostSerializer(many=True, read_only=True)
 
 
     class Meta:
         model = User
         fields = (
+            'pk',
             'username',
+            'email',
+            'img_profile',
             'following_number',
             'follower_number',
             'following_relations',
             'follower_relations',
+            'posts'
         )
 
     def get_following_number(self, obj):

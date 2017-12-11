@@ -14,8 +14,7 @@ from .serializers import (
     FollwingSerializer,
     UserProfileUpdateSerializer,
     UserPasswordUpdateSerializer,
-    FollowingFollowerListSerializer,
-)
+    UserProfileSerializer)
 
 User = get_user_model()
 
@@ -91,12 +90,12 @@ class Follwing(APIView):
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FollowingFollowerList(APIView):
+class UserProfile(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        serializer = FollowingFollowerListSerializer(
+        serializer = UserProfileSerializer(
             user,
             context={'request': request}
         )

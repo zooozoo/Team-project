@@ -18,7 +18,7 @@ CONTINENT_CHOICES = (
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
     # 작성자 - Post모델과 외래키로 연결
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
     title = models.CharField(max_length=30)
 
