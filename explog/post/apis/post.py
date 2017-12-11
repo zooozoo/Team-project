@@ -187,6 +187,6 @@ class PostSearchAPIView(generics.GenericAPIView):
     def post(self,request):
         word=request.data['word']
         # 쿼리는 구현해야 할듯
-        qs=Post.objects.filter(title=word)
+        qs=Post.objects.filter(title__contains=word)
 
         return Response(PostListSerializer(qs,many=True).data,)
