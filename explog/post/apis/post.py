@@ -5,10 +5,10 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike
+from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
 from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
-    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer
+    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -98,6 +98,9 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                     {"post_content{}".format(queryset.pk): dic}
 
                 )
+
+        #reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
+        #data.update({"post_reply":reply.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -185,5 +188,5 @@ class PostSearchAPIView(generics.GenericAPIView):
         word=request.data['word']
         # 쿼리는 구현해야 할듯
         qs=Post.objects.filter(title=word)
-        print(qs)
+
         return Response(PostListSerializer(qs,many=True).data,)

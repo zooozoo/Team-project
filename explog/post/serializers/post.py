@@ -22,7 +22,7 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
 
-# PostList 뷰에서 Post의 첫 번째 사진을 보여주기위한 시리얼라이저
+
 class PostListSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
@@ -40,6 +40,8 @@ class PostListSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at',
             'continent',
+
+
         )
 
 class PostDetailSerializer(serializers.ModelSerializer):
