@@ -16,11 +16,10 @@ class PostSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-            'created_at',
+
             'continent',
 
         )
-
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -38,12 +37,13 @@ class PostListSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-            'created_at',
+
             'continent',
             'liked',
             'num_liked',
 
         )
+
 
 class PostDetailSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
@@ -51,6 +51,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     content = serializers.StringRelatedField(many=True)
     reply = serializers.StringRelatedField(many=True)
     like = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Post
         fields = (
@@ -59,7 +60,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-            'created_at',
+
             'content',
             'reply',
             'like',

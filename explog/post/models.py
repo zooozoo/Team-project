@@ -45,8 +45,7 @@ class Post(models.Model):
         self.num_liked = self.liked.count()
         self.save()
 
-    class Meta:
-        ordering = ['created_at']
+
 
 
 CONTENT_CHOICES = (
