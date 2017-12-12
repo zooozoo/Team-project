@@ -24,7 +24,7 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
     serializer_class = PostReplyCreateSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def get_queryset(self):
@@ -36,7 +36,7 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
         serializer.save(author=self.request.user, post=instance)
 
 
-class PostReplyUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostReplyDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     댓글 수정/삭제 API
     '''
