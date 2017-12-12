@@ -20,8 +20,14 @@ User = get_user_model()
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        email = request.data['email']
-        password = request.data['password']
+        try:
+            email = request.data['email']
+            password = request.data['password']
+        except:
+            data = {
+                'key error': '\'email\'key and \'password\'key must be set'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
         user = authenticate(
             email=email,
             password=password,
@@ -37,10 +43,10 @@ class LoginView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         data = {
-
             'message': 'Invalid credentials'
         }
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 class Signup(APIView):
