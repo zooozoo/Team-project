@@ -40,7 +40,8 @@ class PostListSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at',
             'continent',
-
+            'liked',
+            'num_liked',
 
         )
 
