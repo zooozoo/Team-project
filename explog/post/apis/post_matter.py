@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from post.models import PostText, PostPath, PostPhoto, Post, PostContent
@@ -20,7 +21,7 @@ class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
 
-        instance = PostText.objects.get(pk=self.kwargs['text_pk'])
+        instance = get_object_or_404(PostText.objects.filter(pk=self.kwargs['text_pk']))
 
         return instance
 
@@ -38,7 +39,7 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
 
-        instance = PostPath.objects.get(pk=self.kwargs['path_pk'])
+        instance = get_object_or_404(PostPath.objects.filter(pk=self.kwargs['path_pk']))
 
         return instance
 
@@ -55,7 +56,7 @@ class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self):
 
 
-        instance = PostPhoto.objects.get(pk=self.kwargs['photo_pk'])
+        instance = get_object_or_404(PostPhoto.objects.filter(pk=self.kwargs['photo_pk']))
 
         return instance
 

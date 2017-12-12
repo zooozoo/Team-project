@@ -1,6 +1,8 @@
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -9,6 +11,9 @@ from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLi
 from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer
+
+
+
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -28,7 +33,8 @@ class PostCategoryListAPIView(generics.ListAPIView):
     lookup_url_kwarg = 'category'
 
     def get_queryset(self):
-        queryset = Post.objects.filter(continent=self.kwargs['category'])
+        queryset = get_object_or_404(Post.objects.filter(continent=self.kwargs['category']))
+
         return queryset
 
 
@@ -67,6 +73,8 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     def list(self, request, *args, **kwargs):
         data = {"post_content":[]}
         post_pk = self.get_object().pk
+
+
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
             if queryset.content_type == 'txt':
@@ -133,7 +141,7 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     )
 
     def get_object(self):
-        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
 
         return instance
 
@@ -151,7 +159,7 @@ class PostLikeToggle(generics.GenericAPIView):
     )
 
     def get_object(self):
-        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
         return instance
 
     # /post/post_pk/like/ 에 POST 요청
