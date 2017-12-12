@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
-    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteAPIView, PostLikeToggle, PostCategoryListAPIView, \
+    PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteUpdateAPIView, PostLikeToggle, PostCategoryListAPIView, \
     PostSearchAPIView
 
 urlpatterns = [
@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'search/$',PostSearchAPIView.as_view(),name='post_search'),
     url(r'^create/',PostCreateAPIView.as_view(),name='post_create'),
     url(r'^(?P<post_pk>\d+)/$',PostDetailAPIView.as_view(), name='post_detail'),
-    url(r'^(?P<post_pk>\d+)/delete/$',PostDeleteAPIView.as_view(),name='post_delete'),
+    url(r'^(?P<post_pk>\d+)/update/$', PostDeleteUpdateAPIView.as_view(), name='post_update'),
     url(r'^(?P<post_pk>\d+)/reply/$',PostReplyListAPIView.as_view(),name='post_reply'),
     url(r'^(?P<post_pk>\d+)/reply/create/$',PostReplyCreateAPIView.as_view(),name='post_reply_create'),
     url(r'^reply/(?P<reply_pk>\d+)/$',PostReplyUpdateAPIView.as_view(),name='post_reply_update'),

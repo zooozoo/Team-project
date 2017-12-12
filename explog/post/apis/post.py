@@ -121,7 +121,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         # )
 
 
-class PostDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     여행기 하나를 삭제하기 위한 API
 
