@@ -49,7 +49,9 @@ class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'photo_pk'
-
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
     def get_object(self):
 
 
@@ -77,7 +79,7 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
@@ -106,7 +108,7 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
@@ -135,7 +137,7 @@ class PostPathCreateAPIView(generics.CreateAPIView):
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
