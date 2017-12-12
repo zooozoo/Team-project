@@ -42,11 +42,13 @@ class PostCreateAPIView(generics.CreateAPIView):
 
     # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
 
 
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
@@ -119,15 +121,15 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         # )
 
 
-class PostDeleteAPIView(generics.DestroyAPIView):
+class PostDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     여행기 하나를 삭제하기 위한 API
 
     '''
     lookup_url_kwarg = 'post_pk'
-
+    serializer_class = PostSerializer
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def get_object(self):
