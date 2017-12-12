@@ -5,7 +5,7 @@ from post.models import PostContent
 from post.serializers import PostContentSerializer
 
 
-class PostContentAPIView(generics.RetrieveDestroyAPIView):
+class PostContentAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     여행기 내용 하나를 삭제하기 위한 API
     하위 테이블 Text/Photo/Path를 같이 삭제

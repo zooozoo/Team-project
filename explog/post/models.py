@@ -5,34 +5,30 @@ from django.db import models
 User = get_user_model()
 
 CONTINENT_CHOICES = (
-    ("1","Asia"),
-    ("2","Europe"),
-    ("3","North America"),
-    ("4","South America"),
-    ("5","Africa"),
-    ("6","Oceania"),
+    ("1", "Asia"),
+    ("2", "Europe"),
+    ("3", "North America"),
+    ("4", "South America"),
+    ("5", "Africa"),
+    ("6", "Oceania"),
 )
-
 
 
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
     # 작성자 - Post모델과 외래키로 연결
-    author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
     title = models.CharField(max_length=30)
-
     # 여행 시작 날짜
-    start_date = models.DateTimeField()
-
+    start_date = models.DateTimeField(blank=True, null=True)
     # 여행 끝나는 날짜
     end_date = models.DateTimeField(blank=True, null=True)
     # 여행기 작성 시점
-    created_at = models.DateTimeField(auto_now_add=True)
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 대륙별 구분을 위한 필드
-    continent= models.CharField(choices=CONTINENT_CHOICES, max_length=20)
+    continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20)
     # 좋아요 갯수를 표현하기 위한 필드
     liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -45,9 +41,6 @@ class Post(models.Model):
     def save_num_liked(self):
         self.num_liked = self.liked.count()
         self.save()
-
-    class Meta:
-        ordering = ['created_at']
 
 
 CONTENT_CHOICES = (
@@ -105,7 +98,7 @@ class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(blank=True, null=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -156,7 +149,6 @@ class PostPath(models.Model):
     # 위도경도 - 데이터 타입이 실수
     lat = models.FloatField()
     lng = models.FloatField()
-
 
     def __unicode__(self):
         return 'lat:{}, lng:{}'.format(self.lat, self.lng)
