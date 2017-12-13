@@ -10,7 +10,9 @@ from rest_framework.response import Response
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
 from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
-    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer
+    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, PostUpateSerializer
+from utils.permissions import IsAuthorOrReadOnly
+
 
 
 
@@ -135,9 +137,9 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     '''
     lookup_url_kwarg = 'post_pk'
-    serializer_class = PostSerializer
+    serializer_class = PostUpateSerializer
     permission_classes = (
-        permissions.IsAuthenticated,
+        IsAuthorOrReadOnly,
     )
 
     def get_object(self):

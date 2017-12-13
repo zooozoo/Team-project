@@ -21,6 +21,23 @@ class PostSerializer(serializers.ModelSerializer):
 
         )
 
+class PostUpateSerializer(serializers.ModelSerializer):
+    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
+
+
+    class Meta:
+        model = Post
+        fields = (
+            'pk',
+            'author',
+            'title',
+            'start_date',
+            'end_date',
+
+            'continent',
+
+        )
+
 
 class PostListSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
