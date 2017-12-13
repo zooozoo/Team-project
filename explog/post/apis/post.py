@@ -33,7 +33,7 @@ class PostCategoryListAPIView(generics.ListAPIView):
     lookup_url_kwarg = 'category'
 
     def get_queryset(self):
-        queryset = get_object_or_404(Post.objects.filter(continent=self.kwargs['category']))
+        queryset = Post.objects.filter(continent=self.kwargs['category'])
 
         return queryset
 
