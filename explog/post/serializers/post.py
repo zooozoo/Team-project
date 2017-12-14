@@ -33,7 +33,7 @@ class PostUpateSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-
+            'img',
             'continent',
 
         )
@@ -54,7 +54,7 @@ class PostListSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-
+            'img',
             'continent',
             'liked',
             'num_liked',
@@ -77,7 +77,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-
+            'img',
             'content',
             'reply',
             'like',
