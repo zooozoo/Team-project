@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
@@ -16,6 +18,8 @@ from utils.permissions import IsAuthorOrReadOnly
 
 
 
+now = datetime.now()
+earlier=now - timedelta(days=3)
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -24,10 +28,13 @@ class PostListAPIView(generics.ListAPIView):
     3일 이내 좋아요 순으로 보여주는 것 또한 구현해야 함
     = 아직 구현하지 못함.
     '''
-    queryset = Post.objects.all()
+
     serializer_class = PostListSerializer
     pagination_class = PostListPagination
+    def get_queryset(self):
 
+        queryset = Post.objects.filter(start_date__range=(earlier,now))
+        return queryset
 
 class PostCategoryListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
