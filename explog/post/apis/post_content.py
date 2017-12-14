@@ -4,6 +4,7 @@ from rest_framework.generics import get_object_or_404
 
 from post.models import PostContent
 from post.serializers import PostContentSerializer
+from utils.permissions import IsPostContentAuthorOrReadOnly
 
 
 class PostContentAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -14,8 +15,9 @@ class PostContentAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostContentSerializer
     lookup_url_kwarg = 'content_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        IsPostContentAuthorOrReadOnly,
     )
-    def get_queryset(self):
+    def get_object(self):
         instance = get_object_or_404(PostContent.objects.filter(pk=self.kwargs['content_pk']))
+        self.check_object_permissions(self.request, instance)
         return instance
