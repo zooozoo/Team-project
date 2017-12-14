@@ -24,6 +24,16 @@ class PostPhotoSerializer(serializers.ModelSerializer):
             'created_at',
 
         )
+class PostPhotoCreateSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    photo = serializers.ImageField()
+    created_at = serializers.DateTimeField()
+    order = serializers.IntegerField()
+
+class PostPathCreateSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    path = serializers.CharField()
+    order = serializers.IntegerField()
 
 
 # PostPhoto 객체를 여러 개 받기 위한 시리얼라이저
