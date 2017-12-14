@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.db.models import Q
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
@@ -216,7 +217,7 @@ class PostSearchAPIView(generics.GenericAPIView):
     def post(self,request):
         word=request.data['word']
         # 쿼리는 구현해야 할듯
-        qs=Post.objects.filter(title__contains=word)
+        qs=Post.objects.filter(Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word))
 
         return Response(PostListSerializer(qs,many=True).data,)
 
