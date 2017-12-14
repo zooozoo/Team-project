@@ -2,6 +2,7 @@
 .idea/
 .config_secret/
 .static_root/
+.media/
 
 # Created by https://www.gitignore.io/api/linux,macos,python,django,pycharm
 
