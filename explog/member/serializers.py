@@ -1,31 +1,29 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-
 from member.models import User
 from post.models import Post
 
 
 class UserSerializer(serializers.ModelSerializer):
+    img_profile = serializers.SerializerMethodField()
+    token = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
             'pk',
-            'email',
-            'img_profile',
-            'username'
-        )
-
-
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'img_profile',
             'username',
+            'email',
+            'img_profile',
+            'token',
         )
+
+    def get_img_profile(self, obj):
+        return obj.img_profile.url
+
+    def get_token(self, obj):
+        return Token.objects.get_or_create(user=obj)[0].key
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -64,10 +62,16 @@ class SignupSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError()
 
     def create(self, validated_data):
+        if validated_data.get('img_profile', None):
+            return self.Meta.model.objects.create_user(
+                username=validated_data['username'],
+                password=validated_data['password'],
+                img_profile=validated_data['img_profile'],
+                email=validated_data['email'],
+            )
         return self.Meta.model.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            img_profile=validated_data['img_profile'],
             email=validated_data['email'],
         )
 
@@ -122,7 +126,6 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
         fields = (

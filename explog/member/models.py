@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from utils.custom_image_filed import DefaultStaticImageField
+
 
 class User(AbstractUser):
     username = models.CharField(
@@ -8,11 +10,11 @@ class User(AbstractUser):
         blank=False,
         unique=True,
     )
-
-    img_profile = models.ImageField(
+    img_profile = DefaultStaticImageField(
         upload_to='user',
         blank=True,
-        null=True,
+        default_image_path='default.jpg',
+        # null=True,
     )
     email = models.EmailField(
         unique=True,
