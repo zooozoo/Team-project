@@ -33,6 +33,8 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
 
     def get_queryset(self):
         pk = self.kwargs.get(self.lookup_url_kwarg)
+        self.check_permissions(self.request)
+
         return pk
 
     def perform_create(self, serializer):
