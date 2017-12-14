@@ -13,7 +13,7 @@ from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLi
 from post.pagination import PostListPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, PostUpateSerializer
-from utils.permissions import IsAuthorOrReadOnly
+from utils.permissions import IsPostAuthorOrReadOnly
 
 
 
@@ -134,7 +134,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         #
         # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
         # permission_classes = (
-        #    IsAuthorOrReadOnly,
+        #    IsPostAuthorOrReadOnly,
         # )
 
 
@@ -146,11 +146,12 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'post_pk'
     serializer_class = PostUpateSerializer
     permission_classes = (
-        IsAuthorOrReadOnly,
+        IsPostAuthorOrReadOnly,
     )
 
     def get_object(self):
         instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
+        self.check_object_permissions(self.request, instance)
 
         return instance
 
@@ -169,6 +170,8 @@ class PostLikeToggle(generics.GenericAPIView):
 
     def get_object(self):
         instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
+        self.check_object_permissions(self.request, instance)
+
         return instance
 
     # /post/post_pk/like/ 에 POST 요청

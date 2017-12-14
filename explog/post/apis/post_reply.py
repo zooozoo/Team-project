@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from post.models import PostReply, Post
 from post.serializers import PostReplySerializer, PostReplyCreateSerializer
+from utils.permissions import IsPostAuthorOrReadOnly
 
 
 class PostReplyListAPIView(generics.ListAPIView):
@@ -48,8 +49,9 @@ class PostReplyDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        IsPostAuthorOrReadOnly,
     )
-    def get_queryset(self):
+    def get_object(self):
         instance = get_object_or_404(PostReply.objects.filter(pk=self.kwargs['reply_pk']))
+        self.check_object_permissions(self.request, instance)
         return instance

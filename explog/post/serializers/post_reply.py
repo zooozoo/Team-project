@@ -5,8 +5,7 @@ from post.models import PostReply
 
 
 class PostReplySerializer(serializers.ModelSerializer):
-    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
-    author = UserSerializer()
+
 
     class Meta:
         model = PostReply
