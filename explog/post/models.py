@@ -23,10 +23,10 @@ class Post(models.Model):
     title = models.CharField(max_length=30)
 
     # 여행 시작 날짜
-    start_date = models.DateTimeField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
 
     # 여행 끝나는 날짜
-    end_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     # 여행기 작성 시점
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
@@ -89,7 +89,7 @@ class PostReply(models.Model):
     # 댓글의 내용
     content = models.CharField(max_length=100)
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -106,7 +106,7 @@ class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-    created_at = models.DateTimeField(blank=True,null=True)
+    created_at = models.DateField(blank=True,null=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -131,7 +131,7 @@ class PostPhoto(models.Model):
     # 사진 파일의 URL 필드
     photo = models.ImageField()
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐 - 계획
