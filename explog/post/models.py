@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
+
 User = get_user_model()
 
 CONTINENT_CHOICES = (
@@ -151,12 +152,11 @@ class PostPhoto(models.Model):
 
 
 # 경로 테이블
-class PostPath(models.Model):
+class PostPath(geomodel):
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
     path_data = models.CharField(max_length=255)
-
 
     def __unicode__(self):
         return 'lat:{}, lng:{}'.format(self.lat, self.lng)
