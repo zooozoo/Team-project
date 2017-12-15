@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
-from post.pagination import PostListPagination
+from post.pagination import PostListPagination, PostCategoryPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, PostUpateSerializer
 from utils.permissions import IsPostAuthorOrReadOnly
@@ -32,6 +32,8 @@ class PostListAPIView(generics.ListAPIView):
 
     serializer_class = PostListSerializer
     pagination_class = PostListPagination
+    filter_backends = (filters.OrderingFilter,)
+    ordering=('-num_liked','-pk')
     def get_queryset(self):
 
         queryset = Post.objects.filter(start_date__range=(earlier,now))
@@ -39,8 +41,9 @@ class PostListAPIView(generics.ListAPIView):
 
 class PostCategoryListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
-    pagination_class = PostListPagination
+    pagination_class = PostCategoryPagination
     lookup_url_kwarg = 'category'
+    ordering_fields=('pk',)
 
     def get_queryset(self):
         queryset = Post.objects.filter(continent=self.kwargs['category'])
@@ -214,10 +217,12 @@ class PostLikeToggle(generics.GenericAPIView):
 
 class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
+
+
     def post(self,request):
         word=request.data['word']
         # 쿼리는 구현해야 할듯
-        qs=Post.objects.filter(Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word))
+        qs=Post.objects.filter(Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by('-pk',)
 
         return Response(PostListSerializer(qs,many=True).data,)
 
