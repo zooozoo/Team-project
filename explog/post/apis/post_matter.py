@@ -1,10 +1,12 @@
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from post.models import PostText, PostPath, PostPhoto, Post, PostContent
-from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer, PhotoListSerializer
+from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer
+from utils.permissions import IsMatterAuthorOrReadOnly
 
 
 class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -15,12 +17,13 @@ class PostTextAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'text_pk'
 
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        IsMatterAuthorOrReadOnly,
     )
 
     def get_object(self):
 
-        instance = PostText.objects.get(pk=self.kwargs['text_pk'])
+        instance = get_object_or_404(PostText.objects.filter(pk=self.kwargs['text_pk']))
+        self.check_object_permissions(self.request, instance)
 
         return instance
 
@@ -33,12 +36,13 @@ class PostPathAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'path_pk'
 
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        IsMatterAuthorOrReadOnly,
     )
 
     def get_object(self):
 
-        instance = PostPath.objects.get(pk=self.kwargs['path_pk'])
+        instance = get_object_or_404(PostPath.objects.filter(pk=self.kwargs['path_pk']))
+        self.check_object_permissions(self.request, instance)
 
         return instance
 
@@ -49,23 +53,17 @@ class PostPhotoAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'photo_pk'
-
+    permission_classes = (
+        IsMatterAuthorOrReadOnly,
+    )
     def get_object(self):
 
 
-        instance = PostPhoto.objects.get(pk=self.kwargs['photo_pk'])
+        instance = get_object_or_404(PostPhoto.objects.filter(pk=self.kwargs['photo_pk']))
+        self.check_object_permissions(self.request, instance)
 
         return instance
 
-
-# PostPhoto create뷰는 트러블 슈팅 필요
-class PostPhotolistView(viewsets.ModelViewSet):
-    '''
-    사진 여러 장 한번에 생성하기 위한 API - 미구현
-    '''
-    serializer_class = PhotoListSerializer
-    parser_classes = (MultiPartParser, FormParser,)
-    queryset = PostPhoto.objects.all()
 
 
 class PostTextCreateAPIView(generics.CreateAPIView):
@@ -77,7 +75,7 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     serializer_class = PostTextSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
@@ -106,7 +104,7 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
     serializer_class = PostPhotoSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):
@@ -135,7 +133,7 @@ class PostPathCreateAPIView(generics.CreateAPIView):
     serializer_class = PostPathSerializer
     lookup_url_kwarg = 'post_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        permissions.IsAuthenticated,
     )
 
     def perform_create(self, serializer):

@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyDeleteUpdateAPIView,PostTextAPIView,PostPathAPIView,PostPhotolistView, \
+from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyDeleteUpdateAPIView,PostTextAPIView,PostPathAPIView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
     PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteUpdateAPIView, PostLikeToggle, PostCategoryListAPIView, \
     PostSearchAPIView

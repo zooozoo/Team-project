@@ -21,12 +21,16 @@ class Post(models.Model):
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
     title = models.CharField(max_length=30)
     # 여행 시작 날짜
-    start_date = models.DateTimeField(blank=True, null=True)
+
+    start_date = models.DateField(blank=True, null=True)
+
     # 여행 끝나는 날짜
-    end_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     # 여행기 작성 시점
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
+    # 포스트 기본 이미지 필드
+    img = models.ImageField()
     # 여행기 대륙별 구분을 위한 필드
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20)
     # 좋아요 갯수를 표현하기 위한 필드
@@ -41,6 +45,9 @@ class Post(models.Model):
     def save_num_liked(self):
         self.num_liked = self.liked.count()
         self.save()
+
+    class meta:
+        ordering = ['-pk', ]
 
 
 CONTENT_CHOICES = (
@@ -81,7 +88,7 @@ class PostReply(models.Model):
     # 댓글의 내용
     content = models.CharField(max_length=100)
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -98,7 +105,8 @@ class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-    created_at = models.DateTimeField(blank=True, null=True)
+
+    created_at = models.DateField(blank=True,null=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -123,7 +131,7 @@ class PostPhoto(models.Model):
     # 사진 파일의 URL 필드
     photo = models.ImageField()
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐 - 계획
@@ -147,8 +155,7 @@ class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
-    lat = models.FloatField()
-    lng = models.FloatField()
+    path_data = models.CharField(max_length=255)
 
     def __unicode__(self):
         return 'lat:{}, lng:{}'.format(self.lat, self.lng)

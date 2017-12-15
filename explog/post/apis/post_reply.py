@@ -1,8 +1,12 @@
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from post.models import PostReply, Post
 from post.serializers import PostReplySerializer, PostReplyCreateSerializer
+from utils.permissions import IsPostAuthorOrReadOnly
 
 
 class PostReplyListAPIView(generics.ListAPIView):
@@ -29,10 +33,14 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
 
     def get_queryset(self):
         pk = self.kwargs.get(self.lookup_url_kwarg)
+        self.check_permissions(self.request)
+
         return pk
 
     def perform_create(self, serializer):
-        instance = Post.objects.get(pk=self.get_queryset())
+        instance = get_object_or_404(Post.objects.filter(pk=self.get_queryset()))
+
+
         serializer.save(author=self.request.user, post=instance)
 
 
@@ -40,10 +48,12 @@ class PostReplyDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     댓글 수정/삭제 API
     '''
-    queryset = PostReply.objects.all()
     serializer_class = PostReplySerializer
     lookup_url_kwarg = 'reply_pk'
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
+        IsPostAuthorOrReadOnly,
     )
-
+    def get_object(self):
+        instance = get_object_or_404(PostReply.objects.filter(pk=self.kwargs['reply_pk']))
+        self.check_object_permissions(self.request, instance)
+        return instance

@@ -1,14 +1,24 @@
+from datetime import datetime, timedelta
+
+from django.db.models import Q
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
-from post.pagination import PostListPagination
+from post.pagination import PostListPagination, PostCategoryPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
-    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer
+    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, \
+    PostUpateSerializer
+from utils.permissions import IsPostAuthorOrReadOnly
+
+now = datetime.now()
+earlier = now - timedelta(days=3)
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -17,18 +27,27 @@ class PostListAPIView(generics.ListAPIView):
     3일 이내 좋아요 순으로 보여주는 것 또한 구현해야 함
     = 아직 구현하지 못함.
     '''
-    queryset = Post.objects.all()
+
     serializer_class = PostListSerializer
     pagination_class = PostListPagination
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('-num_liked', '-pk')
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(start_date__range=(earlier, now))
+        return queryset
 
 
 class PostCategoryListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
-    pagination_class = PostListPagination
+    pagination_class = PostCategoryPagination
     lookup_url_kwarg = 'category'
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('-pk',)
 
     def get_queryset(self):
         queryset = Post.objects.filter(continent=self.kwargs['category'])
+
         return queryset
 
 
@@ -48,6 +67,15 @@ class PostCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        data = serializer.data
+        data.update({"author": "{}".format(request.user)})
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     '''
@@ -65,6 +93,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     def list(self, request, *args, **kwargs):
         data = {"post_content": []}
         post_pk = self.get_object().pk
+
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
             if queryset.content_type == 'txt':
@@ -112,7 +141,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         #
         # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
         # permission_classes = (
-        #    IsAuthorOrReadOnly,
+        #    IsPostAuthorOrReadOnly,
         # )
 
 
@@ -122,13 +151,14 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     '''
     lookup_url_kwarg = 'post_pk'
-    serializer_class = PostSerializer
+    serializer_class = PostUpateSerializer
     permission_classes = (
-        permissions.IsAuthenticated,
+        IsPostAuthorOrReadOnly,
     )
 
     def get_object(self):
-        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
+        self.check_object_permissions(self.request, instance)
 
         return instance
 
@@ -146,7 +176,9 @@ class PostLikeToggle(generics.GenericAPIView):
     )
 
     def get_object(self):
-        instance = Post.objects.get(pk=self.kwargs['post_pk'])
+        instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
+        self.check_object_permissions(self.request, instance)
+
         return instance
 
     # /post/post_pk/like/ 에 POST 요청
@@ -185,6 +217,8 @@ class PostSearchAPIView(generics.GenericAPIView):
     def post(self, request):
         word = request.data['word']
         # 쿼리는 구현해야 할듯
-        qs = Post.objects.filter(title__contains=word)
+        qs = Post.objects.filter(
+            Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
+            '-pk', )
 
         return Response(PostListSerializer(qs, many=True).data, )
