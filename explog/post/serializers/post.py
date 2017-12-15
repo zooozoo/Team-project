@@ -16,7 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
             'title',
             'start_date',
             'end_date',
-
+            'img',
             'continent',
 
         )
