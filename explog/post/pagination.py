@@ -18,9 +18,9 @@ class PostListPagination(PageNumberPagination):
         ]))
 
 class PostCategoryPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 6
     page_size_query_param = 'page_size'
-    max_page_size = 3
+    max_page_size = 6
 
     def get_paginated_response(self, data):
         return Response(OrderedDict([

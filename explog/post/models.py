@@ -156,13 +156,11 @@ class PostPath(models.Model):
     # 위도경도 - 데이터 타입이 실수
     path_data = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return 'lat:{}, lng:{}'.format(self.lat, self.lng)
 
-def __unicode__(self):
-    return 'lat:{}, lng:{}'.format(self.lat, self.lng)
-
-
-def __str__(self):
-    return 'lat:{}, lng:{}'.format(self.lat, self.lng)  # 여행기 하나에 좋아요 기능을 구현하고 좋아요 받는 숫자를 저장하기 위한 클래스
+    def __str__(self):
+        return 'lat:{}, lng:{}'.format(self.lat, self.lng)  # 여행기 하나에 좋아요 기능을 구현하고 좋아요 받는 숫자를 저장하기 위한 클래스
 
 
 class PostLike(models.Model):
