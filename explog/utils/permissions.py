@@ -20,3 +20,4 @@ class IsMatterAuthorOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.post_content.post.author == request.user
+

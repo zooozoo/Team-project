@@ -105,8 +105,7 @@ class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-
-    created_at = models.DateField(blank=True,null=True)
+    created_at = models.DateField(blank=True, null=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -119,11 +118,11 @@ class PostText(models.Model):
         return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
 
     def __unicode__(self):
-        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content,
+                                                          self.created_at)  # class PostPhotoGroup(models.Model):
 
 
-# class PostPhotoGroup(models.Model):
-#     order = models.IntegerField()
+# order = models.IntegerField()
 #     post_content = models.ForeignKey(PostContent)
 
 # 사진 하나 테이블 - PostPhotoGroup필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여주는 것 구현 - 계획 중
@@ -157,14 +156,15 @@ class PostPath(models.Model):
     # 위도경도 - 데이터 타입이 실수
     path_data = models.CharField(max_length=255)
 
-    def __unicode__(self):
-        return 'lat:{}, lng:{}'.format(self.lat, self.lng)
 
-    def __str__(self):
-        return 'lat:{}, lng:{}'.format(self.lat, self.lng)
+def __unicode__(self):
+    return 'lat:{}, lng:{}'.format(self.lat, self.lng)
 
 
-# 여행기 하나에 좋아요 기능을 구현하고 좋아요 받는 숫자를 저장하기 위한 클래스
+def __str__(self):
+    return 'lat:{}, lng:{}'.format(self.lat, self.lng)  # 여행기 하나에 좋아요 기능을 구현하고 좋아요 받는 숫자를 저장하기 위한 클래스
+
+
 class PostLike(models.Model):
     # 좋아요를 누른 사용자를 저장하기 위한 외래키 관계
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

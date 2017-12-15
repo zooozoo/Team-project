@@ -31,6 +31,7 @@ class PostListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = PostListPagination
     filter_backends = (filters.OrderingFilter,)
+
     ordering = ('-num_liked', '-pk')
 
     def get_queryset(self):
@@ -129,20 +130,21 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
         # data.update({"post_reply":reply.data})
         return Response(data)
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-        # class PostDetailAPIView(generics.ListAPIView):
-        #     queryset = PostContent.objects.filter()
-        #     lookup_url_kwarg = 'post_pk'
-        #     serializer_class = PostContentSerializer
-        #
-        #
-        #
-        # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
-        # permission_classes = (
-        #    IsPostAuthorOrReadOnly,
-        # )
+def get(self, request, *args, **kwargs):
+    return self.list(request, *args, **kwargs)
+
+    # class PostDetailAPIView(generics.ListAPIView):
+    #     queryset = PostContent.objects.filter()
+    #     lookup_url_kwarg = 'post_pk'
+    #     serializer_class = PostContentSerializer
+    #
+    #
+    #
+    # 멤버모델, 로그인뷰 회원가입뷰 완성 후 주석처리 없앨 것
+    # permission_classes = (
+    #    IsPostAuthorOrReadOnly,
+    # )
 
 
 class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -214,11 +216,22 @@ class PostLikeToggle(generics.GenericAPIView):
 class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
 
-    def post(self, request):
-        word = request.data['word']
-        # 쿼리는 구현해야 할듯
-        qs = Post.objects.filter(
-            Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
-            '-pk', )
 
-        return Response(PostListSerializer(qs, many=True).data, )
+def post(self, request):
+    word = request.data['word']
+    # 쿼리는 구현해야 할듯
+    qs = Post.objects.filter(
+        Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
+        '-pk', )
+
+    return Response(PostListSerializer(qs, many=True).data, )
+
+
+def post(self, request):
+    word = request.data['word']
+    # 쿼리는 구현해야 할듯
+    qs = Post.objects.filter(
+        Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
+        '-pk', )
+
+    return Response(PostListSerializer(qs, many=True).data, )
