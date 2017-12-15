@@ -43,7 +43,8 @@ class PostCategoryListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = PostCategoryPagination
     lookup_url_kwarg = 'category'
-    ordering_fields=('pk',)
+    filter_backends = (filters.OrderingFilter,)
+    ordering=('-pk',)
 
     def get_queryset(self):
         queryset = Post.objects.filter(continent=self.kwargs['category'])
