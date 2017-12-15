@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from post.models import PostText, PostPath, PostPhoto, Post, PostContent
-from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer, PhotoListSerializer
+from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer
 from utils.permissions import IsMatterAuthorOrReadOnly
 
 

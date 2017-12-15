@@ -155,8 +155,7 @@ class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
-    lat = models.FloatField()
-    lng = models.FloatField()
+    path_data = models.CharField(max_length=255)
 
 
     def __unicode__(self):
