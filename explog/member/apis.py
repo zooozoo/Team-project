@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,7 +13,7 @@ from .serializers import (
     FollwingSerializer,
     UserProfileUpdateSerializer,
     UserPasswordUpdateSerializer,
-    UserProfileSerializer, UserSerializer)
+    UserProfileSerializer, UserSerializer, TokenSerializer)
 
 User = get_user_model()
 
@@ -54,6 +56,27 @@ class Signup(APIView):
         value = list(serializer.errors.values())[0][0]
         error = {key: value}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CheckTokenExists(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data['token']
+        except:
+            data = {
+                'Key': 'Invalid Key'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            # raise APIException('Invalid Key')
+        if Token.objects.filter(key=data).exists():
+            token = Token.objects.get(key=data)
+            serializer = TokenSerializer(token)
+            return Response(serializer.data)
+        else:
+            data = {
+                'token': 'token does not exist'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Follwing(APIView):

@@ -26,6 +26,14 @@ class UserSerializer(serializers.ModelSerializer):
         return Token.objects.get_or_create(user=obj)[0].key
 
 
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = (
+            'key',
+        )
+
+
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     email = serializers.EmailField(allow_blank=True)

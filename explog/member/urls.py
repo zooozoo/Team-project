@@ -7,7 +7,7 @@ from .apis import (
     UserProfileUpdate,
     UserPasswordUpdate,
     UserProfile,
-)
+    CheckTokenExists)
 
 urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^userprofile/update/$', UserProfileUpdate.as_view(), name='userprofile-update'),
     url(r'^userpassword/update/$', UserPasswordUpdate.as_view(), name='userpassword-update'),
 
+    url(r'^token/$', CheckTokenExists.as_view(), name='token'),
 ]
