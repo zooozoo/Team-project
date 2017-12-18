@@ -7,7 +7,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from post.models import PostText, PostPath, PostPhoto, Post, PostContent
-from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer, PostTextListSerializer
+from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer, PostTextListSerializer, \
+    PostContentListSerializer
 from utils.permissions import IsMatterAuthorOrReadOnly
 
 
@@ -95,13 +96,16 @@ class PostTextCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='txt')
 
             serializer.save(post_content=post_content)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        instance = PostText.objects.get(pk=serializer.data['pk'])
-        data = PostTextListSerializer(instance).data
+        text = PostText.objects.get(pk=serializer.data['pk'])
+        instance = PostContent.objects.get(pk=text.post_content.pk)
+        data = PostContentListSerializer(instance).data
+        data.update({"content": PostTextSerializer(text).data})
 
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -133,6 +137,18 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='img')
 
             serializer.save(post_content=post_content)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        photo = PostPhoto.objects.get(pk=serializer.data['pk'])
+        instance = PostContent.objects.get(pk=photo.post_content.pk)
+        data = PostContentListSerializer(instance).data
+        data.update({"content": PostPhotoSerializer(photo).data})
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class PostPathCreateAPIView(generics.CreateAPIView):
@@ -162,3 +178,16 @@ class PostPathCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
 
             serializer.save(post_content=post_content)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        path = PostPath.objects.get(pk=serializer.data['pk'])
+        instance = PostContent.objects.get(pk=path.post_content.pk)
+        data = PostContentListSerializer(instance).data
+        data.update({"content": PostPathSerializer(path).data})
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+

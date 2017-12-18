@@ -98,11 +98,21 @@ INSTALLED_APPS = [
     'storages',
     'rest_framework',
     'rest_framework.authtoken',
+    'raven.contrib.django.raven_compat',
 
     'post',
     'member',
 ]
 
+# sentry
+import os
+import raven
+
+RAVEN_CONFIG = config_secret_common['sentry']
+
+from raven.contrib.django.raven_compat.models import client
+
+# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

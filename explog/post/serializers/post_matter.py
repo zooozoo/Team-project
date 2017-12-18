@@ -16,7 +16,7 @@ class PostTextSerializer(serializers.ModelSerializer):
         )
 
 class PostTextListSerializer(serializers.ModelSerializer):
-    post_content = PostContentListSerializer()
+
     class Meta:
         model = PostText
         fields = (
@@ -69,5 +69,6 @@ class PostPathSerializer(serializers.ModelSerializer):
         model = PostPath
         fields = (
             'pk',
-            'path_data',
+            'lat',
+            'lng',
         )

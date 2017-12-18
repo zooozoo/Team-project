@@ -13,14 +13,13 @@ from rest_framework.response import Response
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
 from post.pagination import PostListPagination, PostCategoryPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
-    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, PostUpateSerializer
+    PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, \
+    PostUpateSerializer, \
+    PostLikeSerializer
 from utils.permissions import IsPostAuthorOrReadOnly
 
-
-
-
 now = datetime.now().date()
-earlier=now - timedelta(days=3)
+earlier = now - timedelta(days=3)
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -33,18 +32,19 @@ class PostListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = PostListPagination
     filter_backends = (filters.OrderingFilter,)
-    ordering=('-num_liked','-pk')
-    def get_queryset(self):
+    ordering = ('-num_liked', '-pk')
 
-        queryset = Post.objects.filter(start_date__range=(earlier,now))
+    def get_queryset(self):
+        queryset = Post.objects.filter(start_date__range=(earlier, now))
         return queryset
+
 
 class PostCategoryListAPIView(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = PostCategoryPagination
     lookup_url_kwarg = 'category'
     filter_backends = (filters.OrderingFilter,)
-    ordering=('-pk',)
+    ordering = ('-pk',)
 
     def get_queryset(self):
         queryset = Post.objects.filter(continent=self.kwargs['category'])
@@ -93,9 +93,8 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     path_serializer = PostPathSerializer
 
     def list(self, request, *args, **kwargs):
-        data = {"post_content":[]}
+        data = {"post_content": []}
         post_pk = self.get_object().pk
-
 
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
@@ -104,7 +103,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
                 dic = post_content_serializer.data
-                dic.update({'content'.format(queryset.pk):text_serializer.data})
+                dic.update({'content'.format(queryset.pk): text_serializer.data})
                 data["post_content"].append(
                     dic
 
@@ -124,15 +123,15 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
                 path_serializer = self.path_serializer(path_qs)
-                dic=post_content_serializer.data
+                dic = post_content_serializer.data
                 dic.update({"content".format(queryset.pk): path_serializer.data})
                 data["post_content"].append(
                     dic
 
                 )
 
-        #reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
-        #data.update({"post_reply":reply.data})
+        # reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
+        # data.update({"post_reply":reply.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -212,7 +211,7 @@ class PostLikeToggle(generics.GenericAPIView):
         # 업데이트된 instance를 PostSerializer에 넣어 직렬화하여 응답으로 돌려줌
         # serializer만 수정하면 될듯
         data = {
-            "post": PostListSerializer(instance).data
+            "post": PostLikeSerializer(instance).data
         }
         return Response(data)
 
@@ -220,12 +219,11 @@ class PostLikeToggle(generics.GenericAPIView):
 class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
 
-
-    def post(self,request):
-        word=request.data['word']
+    def post(self, request):
+        word = request.data['word']
         # 쿼리는 구현해야 할듯
-        qs=Post.objects.filter(Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by('-pk',)
+        qs = Post.objects.filter(
+            Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
+            '-pk', )
 
-        return Response(PostListSerializer(qs,many=True).data,)
-
-
+        return Response(PostListSerializer(qs, many=True).data, )
