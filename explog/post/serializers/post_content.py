@@ -12,3 +12,13 @@ class PostContentSerializer(serializers.ModelSerializer):
             'content_type',
         )
 
+class PostContentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostContent
+        fields = (
+            'pk',
+            'post',
+            'order',
+            'content_type',
+        )
+

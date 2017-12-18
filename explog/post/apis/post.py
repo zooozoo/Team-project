@@ -19,7 +19,7 @@ from utils.permissions import IsPostAuthorOrReadOnly
 
 
 
-now = datetime.now()
+now = datetime.now().date()
 earlier=now - timedelta(days=3)
 
 

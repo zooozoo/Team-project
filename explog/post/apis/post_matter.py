@@ -1,11 +1,13 @@
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
 
 from post.models import PostText, PostPath, PostPhoto, Post, PostContent
-from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer
+from post.serializers import PostTextSerializer, PostPathSerializer, PostPhotoSerializer, PostTextListSerializer
 from utils.permissions import IsMatterAuthorOrReadOnly
 
 
@@ -93,6 +95,15 @@ class PostTextCreateAPIView(generics.CreateAPIView):
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='txt')
 
             serializer.save(post_content=post_content)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        instance = PostText.objects.get(pk=serializer.data['pk'])
+        data = PostTextListSerializer(instance).data
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class PostPhotoCreateAPIView(generics.CreateAPIView):
