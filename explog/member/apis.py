@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
-from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,7 +12,10 @@ from .serializers import (
     FollwingSerializer,
     UserProfileUpdateSerializer,
     UserPasswordUpdateSerializer,
-    UserProfileSerializer, UserSerializer, TokenSerializer)
+    UserProfileSerializer,
+    UserSerializer,
+    TokenSerializer
+)
 
 User = get_user_model()
 

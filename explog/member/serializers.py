@@ -103,12 +103,17 @@ class FollwingSerializer(serializers.Serializer):
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    img_profile = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
             'username',
             'img_profile',
         )
+
+    def get_img_profile(self, obj):
+        return obj.img_profile.url
 
     def update(self, instance, validated_data):
         self.instance.username = validated_data.get('username', instance.username)
@@ -136,18 +141,6 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = (
-            'pk',
-            'title',
-            'start_date',
-            'end_date',
-            'continent',
-        )
-
-
-class LikedPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
         fields = '__all__'
 
 
@@ -157,7 +150,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     following_number = serializers.SerializerMethodField()
     follower_number = serializers.SerializerMethodField()
     posts = PostSerializer(many=True, read_only=True)
-    liked_posts = LikedPostSerializer(many=True, read_only=True)
+    liked_posts = PostSerializer(many=True, read_only=True)
 
     class Meta:
         model = User

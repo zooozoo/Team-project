@@ -34,12 +34,12 @@ class PostListAPIView(generics.ListAPIView):
     filter_backends = (filters.OrderingFilter,)
 
 
-ordering = ('-num_liked', '-pk')
+    ordering = ('-num_liked', '-pk')
 
 
-def get_queryset(self):
-    queryset = Post.objects.filter(start_date__range=(earlier, now))
-    return queryset
+    def get_queryset(self):
+        queryset = Post.objects.filter(start_date__range=(earlier, now))
+        return queryset
 
 
 class PostCategoryListAPIView(generics.ListAPIView):
