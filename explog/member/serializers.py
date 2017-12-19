@@ -103,17 +103,12 @@ class FollwingSerializer(serializers.Serializer):
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
-    img_profile = serializers.SerializerMethodField()
-
     class Meta:
         model = User
         fields = (
             'username',
             'img_profile',
         )
-
-    def get_img_profile(self, obj):
-        return obj.img_profile.url
 
     def update(self, instance, validated_data):
         self.instance.username = validated_data.get('username', instance.username)

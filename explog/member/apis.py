@@ -108,11 +108,10 @@ class Follwing(APIView):
             Relation.objects.create(from_user=from_user, to_user=to_user, )
             return Response(data, status=status.HTTP_200_OK)
         # validation error가 발생 했을 경우 에러 메시지 가공
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfile(APIView):
@@ -140,12 +139,16 @@ class UserProfileUpdate(APIView):
         )
         if serializer.is_valid():
             serializer.update(user, validated_data=serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            serializer = UserSerializer(user)
+            data = {
+                'username': serializer.data['username'],
+                'img_profile': serializer.data['img_profile']
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserPasswordUpdate(APIView):
@@ -159,8 +162,7 @@ class UserPasswordUpdate(APIView):
                 'success': 'password가 변경되었습니다.'
             }
             return Response(data, status=status.HTTP_200_OK)
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
