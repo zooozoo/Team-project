@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from post.models import PostContent, PostPhoto, PostPath, PostText
+from post.serializers import PostContentSerializer, PostContentListSerializer
 
 
 class PostTextSerializer(serializers.ModelSerializer):
@@ -13,6 +14,19 @@ class PostTextSerializer(serializers.ModelSerializer):
             'created_at',
 
         )
+
+class PostTextListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PostText
+        fields = (
+            'pk',
+            'post_content',
+            'content',
+            'created_at',
+
+        )
+
 
 
 class PostPhotoSerializer(serializers.ModelSerializer):
@@ -55,5 +69,6 @@ class PostPathSerializer(serializers.ModelSerializer):
         model = PostPath
         fields = (
             'pk',
-            'path_data',
+            'lat',
+            'lng',
         )

@@ -14,10 +14,11 @@ from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLi
 from post.pagination import PostListPagination, PostCategoryPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, \
-    PostUpateSerializer
+    PostUpateSerializer, \
+    PostLikeSerializer
 from utils.permissions import IsPostAuthorOrReadOnly
 
-now = datetime.now()
+now = datetime.now().date()
 earlier = now - timedelta(days=3)
 
 
@@ -32,11 +33,13 @@ class PostListAPIView(generics.ListAPIView):
     pagination_class = PostListPagination
     filter_backends = (filters.OrderingFilter,)
 
-    ordering = ('-num_liked', '-pk')
 
-    def get_queryset(self):
-        queryset = Post.objects.filter(start_date__range=(earlier, now))
-        return queryset
+ordering = ('-num_liked', '-pk')
+
+
+def get_queryset(self):
+    queryset = Post.objects.filter(start_date__range=(earlier, now))
+    return queryset
 
 
 class PostCategoryListAPIView(generics.ListAPIView):
@@ -125,8 +128,6 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 data["post_content"].append(
                     dic
                 )
-        # reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
-        # data.update({"post_reply":reply.data})
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -206,7 +207,7 @@ class PostLikeToggle(generics.GenericAPIView):
         # 업데이트된 instance를 PostSerializer에 넣어 직렬화하여 응답으로 돌려줌
         # serializer만 수정하면 될듯
         data = {
-            "post": PostListSerializer(instance).data
+            "post": PostLikeSerializer(instance).data
         }
         return Response(data)
 

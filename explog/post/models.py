@@ -21,11 +21,9 @@ class Post(models.Model):
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
     title = models.CharField(max_length=30)
     # 여행 시작 날짜
-
-    start_date = models.DateTimeField(blank=True, null=True)
-
+    start_date = models.DateField(blank=True, null=True)
     # 여행 끝나는 날짜
-    end_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     # 여행기 작성 시점
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
@@ -88,7 +86,7 @@ class PostReply(models.Model):
     # 댓글의 내용
     content = models.CharField(max_length=100)
     # 작성시점
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -105,8 +103,7 @@ class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-    created_at = models.DateTimeField(blank=True, null=True)
-    # 수정시점
+    created_at = models.DateField(blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='text')
@@ -119,11 +116,9 @@ class PostText(models.Model):
 
     def __unicode__(self):
         return 'title:{} content:{} created_at:{}'.format(self.title, self.content,
-                                                          self.created_at)  # class PostPhotoGroup(models.Model):
+                                                          self.created_at)  # class PostPhotoGroup(models.Model):  # order = models.IntegerField()
+        #     post_content = models.ForeignKey(PostContent)
 
-
-# order = models.IntegerField()
-#     post_content = models.ForeignKey(PostContent)
 
 # 사진 하나 테이블 - PostPhotoGroup필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여주는 것 구현 - 계획 중
 class PostPhoto(models.Model):
@@ -135,7 +130,6 @@ class PostPhoto(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # PostPhotoGroup필드를 외래키로 가짐 - 계획
     # photo_group = models.ForeignKey(PostPhotoGroup)
-
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='photo')
 
@@ -154,7 +148,8 @@ class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
-    path_data = models.CharField(max_length=255)
+    lat = models.FloatField()
+    lng = models.FloatField()
 
     def __unicode__(self):
         return 'lat:{}, lng:{}'.format(self.lat, self.lng)
