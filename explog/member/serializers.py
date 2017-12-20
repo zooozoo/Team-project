@@ -6,6 +6,9 @@ from member.models import User
 from post.models import Post
 
 
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -14,6 +17,29 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'img_profile',
             'username'
+        )
+
+
+class PostListSerializer(serializers.ModelSerializer):
+    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
+    author = UserSerializer()
+
+    # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
+    # method필드가 아니라 릴레이션필드를 사용해야함.
+
+    class Meta:
+        model = Post
+        fields = (
+            'pk',
+            'author',
+            'title',
+            'start_date',
+            'end_date',
+            'img',
+            'continent',
+            'liked',
+            'num_liked',
+
         )
 
 
@@ -147,7 +173,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     followers = UserSerializer(many=True, read_only=True)
     following_number = serializers.SerializerMethodField()
     follower_number = serializers.SerializerMethodField()
-    posts = PostSerializer(many=True, read_only=True)
+    posts = PostListSerializer(many=True, read_only=True)
     liked_posts = LikedPostSerializer(many=True, read_only=True)
 
     class Meta:
@@ -172,3 +198,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_follower_number(self, obj):
         user = self.context['request'].user
         return user.follower_relations.count()
+
+
