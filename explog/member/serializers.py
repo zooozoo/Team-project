@@ -136,7 +136,17 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = (
+            'pk',
+            'author',
+            'title',
+            'start_date',
+            'end_date',
+            'img',
+            'continent',
+            'liked',
+            'num_liked',
+        )
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
