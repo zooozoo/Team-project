@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^(?P<post_pk>\d+)/photo/$',PostPhotoCreateAPIView.as_view(),name='post_photo_create'),
     url(r'^photo/(?P<photo_pk>\d+)/$',PostPhotoAPIView.as_view(),name='post_photo'),
     url(r'^(?P<post_pk>\d+)/like/$', PostLikeToggle.as_view(), name='post_like'),
-
 ]

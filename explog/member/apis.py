@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,7 +15,7 @@ from .serializers import (
     UserPasswordUpdateSerializer,
     UserProfileSerializer,
     UserSerializer,
-    TokenSerializer
+    TokenSerializer,
 )
 
 User = get_user_model()
@@ -114,7 +115,7 @@ class Follwing(APIView):
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserProfile(APIView):
+class MyProfile(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
@@ -123,7 +124,24 @@ class UserProfile(APIView):
             user,
             context={'request': request}
         )
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserProfile(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, user_pk, *args, **kwargs):
+        if User.objects.filter(pk=user_pk).exists():
+            user = User.objects.get(pk=user_pk)
+            serializer = UserProfileSerializer(
+                user,
+                context={'request': request}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        error = {
+            'user_pk': '존재하지 않는 user'
+        }
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileUpdate(APIView):
