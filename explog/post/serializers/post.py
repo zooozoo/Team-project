@@ -1,9 +1,12 @@
 import datetime
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from member.serializers import UserSerializer
-from post.models import Post
+from post.models import Post, PostLike
 
+User = get_user_model()
 
 class PostSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
@@ -54,6 +57,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
     # method필드가 아니라 릴레이션필드를 사용해야함.
+    liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -69,6 +73,15 @@ class PostLikeSerializer(serializers.ModelSerializer):
             'num_liked',
 
         )
+
+    def get_liked(self, obj):
+        Like = PostLike.objects.filter(post=obj)
+        data = {}
+        for qs in Like:
+            data.update({"liker{}".format(User.objects.get(email=qs.author).pk): UserSerializer(
+                User.objects.get(email=qs.author)).data})
+
+        return data
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -78,6 +91,8 @@ class PostListSerializer(serializers.ModelSerializer):
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
     # method필드가 아니라 릴레이션필드를 사용해야함.
     img = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
         fields = (
@@ -88,17 +103,23 @@ class PostListSerializer(serializers.ModelSerializer):
             'end_date',
             'img',
             'continent',
-
+            'liked',
             'num_liked',
 
         )
-        read_only_fields =(
-            'liked',
-        )
+
 
     def get_img(self, obj):
         return obj.img.url
 
+    def get_liked(self, obj):
+        Like = PostLike.objects.filter(post=obj)
+        data = {}
+        for qs in Like:
+            data.update({"liker{}".format(User.objects.get(email=qs.author).pk): UserSerializer(
+                User.objects.get(email=qs.author)).data})
+
+        return data
 
 class PostDetailSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
