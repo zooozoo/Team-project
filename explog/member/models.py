@@ -14,7 +14,6 @@ class User(AbstractUser):
         upload_to='user',
         blank=True,
         default_image_path='default.jpg',
-        # null=True,
     )
     email = models.EmailField(
         unique=True,

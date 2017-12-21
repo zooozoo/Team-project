@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from utils.custom_image_filed import DefaultStaticPostImageField
+
 User = get_user_model()
 
 CONTINENT_CHOICES = (
@@ -28,7 +30,12 @@ class Post(models.Model):
     # 여행기 수정 시점
     updated_at = models.DateTimeField(auto_now=True)
     # 포스트 기본 이미지 필드
-    img = models.ImageField()
+    img = DefaultStaticPostImageField(
+        upload_to='media',
+        blank=True,
+        default_image_path='default_post.jpg',
+        # null=True,
+    )
     # 여행기 대륙별 구분을 위한 필드
     continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20)
     # 좋아요 갯수를 표현하기 위한 필드
