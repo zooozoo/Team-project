@@ -54,7 +54,6 @@ class PostUpateSerializer(serializers.ModelSerializer):
 class PostLikeSerializer(serializers.ModelSerializer):
     # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
     author = UserSerializer()
-
     # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
     # method필드가 아니라 릴레이션필드를 사용해야함.
     liked = serializers.SerializerMethodField()
@@ -71,7 +70,6 @@ class PostLikeSerializer(serializers.ModelSerializer):
             'continent',
             'liked',
             'num_liked',
-
         )
 
     def get_liked(self, obj):
@@ -80,7 +78,6 @@ class PostLikeSerializer(serializers.ModelSerializer):
         for qs in Like:
             data.update({"liker{}".format(User.objects.get(email=qs.author).pk): UserSerializer(
                 User.objects.get(email=qs.author)).data})
-
         return data
 
 
