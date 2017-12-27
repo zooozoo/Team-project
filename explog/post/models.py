@@ -22,7 +22,7 @@ class Post(models.Model):
     # 작성자 - Post모델과 외래키로 연결
     author = models.ForeignKey(User, on_delete=models.CASCADE,related_name='posts')
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=60)
 
     # 여행 시작 날짜
     start_date = models.DateField(blank=True, null=True)
