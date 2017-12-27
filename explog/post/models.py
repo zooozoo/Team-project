@@ -52,7 +52,7 @@ class Post(models.Model):
         self.save()
 
     class meta:
-        ordering = ['-pk', ]
+        ordering = ['-pk',]
 
 
 CONTENT_CHOICES = (

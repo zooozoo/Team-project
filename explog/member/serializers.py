@@ -132,10 +132,17 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+# psot list ordering을 위한 serializer
+class PostListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('-pk', )
+        return super(PostListSerializer, self).to_representation(data)
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        list_serializer_class = PostListSerializer
         fields = (
             'pk',
             'author',

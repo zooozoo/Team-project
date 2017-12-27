@@ -124,7 +124,6 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'reply',
             'like',
         )
-
         # 역참조 postreply.set relationfield
 
 
