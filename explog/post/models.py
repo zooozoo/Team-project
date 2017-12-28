@@ -95,7 +95,7 @@ class PostReply(models.Model):
     # 댓글의 내용
     content = models.CharField(max_length=100)
     # 작성시점
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
