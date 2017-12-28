@@ -131,12 +131,11 @@ class PostText(models.Model):
         return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
 
     def __unicode__(self):
-        return 'title:{} content:{} created_at:{}'.format(self.title, self.content,
-                                                          self.created_at)  # class PostPhotoGroup(models.Model):  # order = models.IntegerField()
-        #     post_content = models.ForeignKey(PostContent)
+        return 'title:{} content:{} created_at:{}'.format(self.title, self.content, self.created_at)
+
+        # 사진 하나 테이블 - PostPhotoGroup필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여주는 것 구현 - 계획 중
 
 
-# 사진 하나 테이블 - PostPhotoGroup필드와 다대일 관계 만들어 사진 여러개를 한꺼번에 보여주는 것 구현 - 계획 중
 class PostPhoto(models.Model):
     # 사진 파일의 URL 필드
     photo = models.ImageField()
