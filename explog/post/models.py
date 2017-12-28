@@ -7,20 +7,19 @@ from utils.custom_image_filed import DefaultStaticPostImageField
 User = get_user_model()
 
 CONTINENT_CHOICES = (
-    ("1","Asia"),
-    ("2","Europe"),
-    ("3","North America"),
-    ("4","South America"),
-    ("5","Africa"),
-    ("6","Oceania"),
+    ("1", "Asia"),
+    ("2", "Europe"),
+    ("3", "North America"),
+    ("4", "South America"),
+    ("5", "Africa"),
+    ("6", "Oceania"),
 )
-
 
 
 # Post 모델 - 여행기 한 개
 class Post(models.Model):
     # 작성자 - Post모델과 외래키로 연결
-    author = models.ForeignKey(User, on_delete=models.CASCADE,related_name='posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
     title = models.CharField(max_length=60)
 
@@ -38,9 +37,9 @@ class Post(models.Model):
         blank=True,
         default_image_path='default_post.jpg',
         # null=True,
-        )
+    )
     # 여행기 대륙별 구분을 위한 필드
-    continent= models.CharField(choices=CONTINENT_CHOICES, max_length=20)
+    continent = models.CharField(choices=CONTINENT_CHOICES, max_length=20)
     # 좋아요 갯수를 표현하기 위한 필드
     liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -55,7 +54,7 @@ class Post(models.Model):
         self.save()
 
     class meta:
-        ordering = ['-pk',]
+        ordering = ['-pk', ]
 
 
 CONTENT_CHOICES = (
@@ -108,16 +107,24 @@ class PostReply(models.Model):
         return '{},{},{}'.format(self.author, self.content, self.created_at)
 
 
+TEXT_CHOICES = (
+    ("b", "basic"),
+    ("h", "highlight"),
+
+)
+
+
 # 글 하나 테이블
 class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
-    created_at = models.DateField(blank=True,null=True)
+    created_at = models.DateField(blank=True, null=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='text')
+    type = models.CharField(max_length=10, choices=TEXT_CHOICES)
 
     class Meta:
         ordering = ['created_at']
