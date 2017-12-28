@@ -21,7 +21,7 @@ class Post(models.Model):
     # 작성자 - Post모델과 외래키로 연결
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     # 여행기의 제목 - 여행기 내용 중 글에도 title이 존
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=60)
     # 여행 시작 날짜
     start_date = models.DateField(blank=True, null=True)
     # 여행 끝나는 날짜
@@ -93,7 +93,7 @@ class PostReply(models.Model):
     # 댓글의 내용
     content = models.CharField(max_length=100)
     # 작성시점
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -105,15 +105,24 @@ class PostReply(models.Model):
         return '{},{},{}'.format(self.author, self.content, self.created_at)
 
 
+TEXT_CHOICES = (
+    ("b", "basic"),
+    ("h", "highlight"),
+
+)
+
+
 # 글 하나 테이블
 class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
     # 작성시점
     created_at = models.DateField(blank=True, null=True)
+    # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='text')
+    type = models.CharField(max_length=10, choices=TEXT_CHOICES)
 
     class Meta:
         ordering = ['created_at']

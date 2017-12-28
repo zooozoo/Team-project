@@ -161,6 +161,10 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 
         return instance
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail":"여행기 하나가 삭제되었습니다."},status=status.HTTP_204_NO_CONTENT)
 
 # 포스트 좋아요 & 좋아요 취소 토글
 class PostLikeToggle(generics.GenericAPIView):

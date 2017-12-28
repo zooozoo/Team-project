@@ -1,6 +1,8 @@
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from post.models import PostContent
 from post.serializers import PostContentSerializer
@@ -21,3 +23,8 @@ class PostContentAPIView(generics.RetrieveUpdateDestroyAPIView):
         instance = get_object_or_404(PostContent.objects.filter(pk=self.kwargs['content_pk']))
         self.check_object_permissions(self.request, instance)
         return instance
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail":"여행기 구성물 하나가 삭제되었습니다."},status=status.HTTP_204_NO_CONTENT)
