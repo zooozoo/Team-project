@@ -6,7 +6,7 @@ from post.models import PostReply
 
 class PostReplySerializer(serializers.ModelSerializer):
 
-
+    author = UserSerializer()
     class Meta:
         model = PostReply
         fields = (
