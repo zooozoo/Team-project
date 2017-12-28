@@ -132,6 +132,7 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
 # psot list ordering을 위한 serializer
 class PostListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
