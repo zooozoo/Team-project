@@ -42,6 +42,14 @@ class PostReplyCreateAPIView(generics.CreateAPIView):
 
 
         serializer.save(author=self.request.user, post=instance)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        reply = PostReply.objects.get(pk=serializer.data['pk'])
+        data = PostReplySerializer(reply).data
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class PostReplyDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
