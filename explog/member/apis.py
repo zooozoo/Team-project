@@ -101,12 +101,12 @@ class Follwing(APIView):
             if from_user.following_users.filter(pk=to_user.pk).exists():
                 from_user.following_relations.get(to_user=to_user).delete()
                 data = {
-                    'unfollowing': str(serializer.validated_data['to_user'])
+                    'unfollowing': serializer.validated_data['to_user']
                 }
                 return Response(data, status=status.HTTP_200_OK)
             # from_user가 to_user를 follow하고 있지 않은 경우 관계 생성
             Relation.objects.create(from_user=from_user, to_user=to_user, )
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         # validation error가 발생 했을 경우 에러 메시지 가공
         key = list(serializer.errors.keys())[0]
         value = list(serializer.errors.values())[0][0]
@@ -121,7 +121,7 @@ class MyProfile(APIView):
         user = request.user
         serializer = UserProfileSerializer(
             user,
-            context={'request': request}
+            context={'user': user}
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -134,7 +134,7 @@ class UserProfile(APIView):
             user = User.objects.get(pk=user_pk)
             serializer = UserProfileSerializer(
                 user,
-                context={'request': request}
+                context={'user': user}
             )
             return Response(serializer.data, status=status.HTTP_200_OK)
         error = {

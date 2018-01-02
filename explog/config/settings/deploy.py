@@ -2,7 +2,7 @@ from .base import *
 
 config_secret = json.loads(open(CONFIG_SECRET_DEPLOY_FILE).read())
 
-DEBUG=True
+DEBUG=False
 # location, storages
 
 STATICFILES_STORAGE = 'config.storages.StaticStorage'

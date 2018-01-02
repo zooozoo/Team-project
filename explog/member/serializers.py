@@ -164,6 +164,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     follower_number = serializers.SerializerMethodField()
     posts = PostSerializer(many=True, read_only=True)
     liked_posts = PostSerializer(many=True, read_only=True)
+    img_profile = serializers.SerializerMethodField()
+
 
     class Meta:
         model = User
@@ -181,9 +183,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
     def get_following_number(self, obj):
-        user = self.context['request'].user
+        user = self.context['user']
         return user.following_relations.count()
 
     def get_follower_number(self, obj):
-        user = self.context['request'].user
+        user = self.context['user']
         return user.follower_relations.count()
+
+    def get_img_profile(self, obj):
+        return obj.img_profile.url
