@@ -109,8 +109,6 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                     dic
 
                 )
-
-
             elif queryset.content_type == 'txt':
                 post_content_serializer = self.content_serializer(queryset)
                 text_qs = PostText.objects.get(post_content=queryset)
@@ -130,7 +128,6 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                     dic
 
                 )
-<<<<<<< HEAD
             elif queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
@@ -140,11 +137,6 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 data["post_content"].append(
                     dic
                 )
-=======
-
-        # reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
-        # data.update({"post_reply":reply.data})
->>>>>>> 072ba02015f4ad21c819ec012f1689d76c5c7a53
         return Response(data)
 
     def get(self, request, *args, **kwargs):

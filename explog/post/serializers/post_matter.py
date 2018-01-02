@@ -26,7 +26,6 @@ class PostTextListSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
             'type',
-
         )
 
 
