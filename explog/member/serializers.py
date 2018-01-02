@@ -166,7 +166,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     liked_posts = PostSerializer(many=True, read_only=True)
     img_profile = serializers.SerializerMethodField()
 
-
     class Meta:
         model = User
         fields = (
