@@ -98,7 +98,20 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
         post_content_queryset = PostContent.objects.filter(post=post_pk).order_by('order')
         for queryset in post_content_queryset:
-            if queryset.content_type == 'txt':
+
+            if queryset.content_type == 'path':
+                post_content_serializer = self.content_serializer(queryset)
+                path_qs = PostPath.objects.get(post_content=queryset)
+                path_serializer = self.path_serializer(path_qs)
+                dic = post_content_serializer.data
+                dic.update({"content".format(queryset.pk): path_serializer.data})
+                data["post_content"].append(
+                    dic
+
+                )
+
+
+            elif queryset.content_type == 'txt':
                 post_content_serializer = self.content_serializer(queryset)
                 text_qs = PostText.objects.get(post_content=queryset)
                 text_serializer = self.text_serializer(text_qs)
@@ -117,6 +130,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                     dic
 
                 )
+<<<<<<< HEAD
             elif queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.get(post_content=queryset)
@@ -126,6 +140,11 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
                 data["post_content"].append(
                     dic
                 )
+=======
+
+        # reply=PostReplySerializer(PostReply.objects.filter(post=post_pk),many=True)
+        # data.update({"post_reply":reply.data})
+>>>>>>> 072ba02015f4ad21c819ec012f1689d76c5c7a53
         return Response(data)
 
     def get(self, request, *args, **kwargs):
@@ -164,7 +183,8 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"detail":"여행기 하나가 삭제되었습니다."},status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "여행기 하나가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
 
 # 포스트 좋아요 & 좋아요 취소 토글
 class PostLikeToggle(generics.GenericAPIView):

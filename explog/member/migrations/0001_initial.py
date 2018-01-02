@@ -12,6 +12,7 @@ import utils.custom_image_filed
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [

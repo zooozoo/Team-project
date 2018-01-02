@@ -9,7 +9,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -26,18 +25,23 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateField(blank=True, null=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('img', models.ImageField(upload_to='')),
-                ('continent', models.CharField(choices=[('1', 'Asia'), ('2', 'Europe'), ('3', 'North America'), ('4', 'South America'), ('5', 'Africa'), ('6', 'Oceania')], max_length=20)),
+                ('continent', models.CharField(
+                    choices=[('1', 'Asia'), ('2', 'Europe'), ('3', 'North America'), ('4', 'South America'),
+                             ('5', 'Africa'), ('6', 'Oceania')], max_length=20)),
                 ('num_liked', models.IntegerField(default=0)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts',
+                                             to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='PostContent',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content_type', models.CharField(choices=[('txt', 'text'), ('img', 'photo'), ('path', 'path')], max_length=4)),
+                ('content_type',
+                 models.CharField(choices=[('txt', 'text'), ('img', 'photo'), ('path', 'path')], max_length=4)),
                 ('order', models.IntegerField(default=1)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='content', to='post.Post')),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='content',
+                                           to='post.Post')),
             ],
             options={
                 'ordering': ['order'],
@@ -49,7 +53,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('liked_date', models.DateTimeField(auto_now_add=True)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='like', to='post.Post')),
+                ('post',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='like', to='post.Post')),
             ],
             options={
                 'ordering': ['-liked_date'],
@@ -61,7 +66,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('lat', models.FloatField()),
                 ('lng', models.FloatField()),
-                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='path', to='post.PostContent')),
+                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='path',
+                                                   to='post.PostContent')),
             ],
         ),
         migrations.CreateModel(
@@ -71,7 +77,8 @@ class Migration(migrations.Migration):
                 ('photo', models.ImageField(upload_to='')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='photo', to='post.PostContent')),
+                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='photo',
+                                                   to='post.PostContent')),
             ],
             options={
                 'ordering': ['created_at'],
@@ -85,7 +92,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reply', to='post.Post')),
+                ('post',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reply', to='post.Post')),
             ],
             options={
                 'ordering': ['created_at'],
@@ -98,7 +106,8 @@ class Migration(migrations.Migration):
                 ('content', models.TextField()),
                 ('created_at', models.DateField(blank=True, null=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='text', to='post.PostContent')),
+                ('post_content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='text',
+                                                   to='post.PostContent')),
             ],
             options={
                 'ordering': ['created_at'],
@@ -107,6 +116,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='liked',
-            field=models.ManyToManyField(related_name='liked_posts', through='post.PostLike', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='liked_posts', through='post.PostLike',
+                                         to=settings.AUTH_USER_MODEL),
         ),
     ]
