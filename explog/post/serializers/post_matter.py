@@ -41,6 +41,17 @@ class PostPhotoSerializer(serializers.ModelSerializer):
 
         )
 
+class PostPhotoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostPhoto
+        fields = (
+            'pk',
+            'photo',
+            'created_at',
+            'post_content',
+        )
+
+
 
 class PostPathCreateSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
@@ -73,4 +84,14 @@ class PostPathSerializer(serializers.ModelSerializer):
             'pk',
             'lat',
             'lng',
+        )
+
+class PostPathListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostPath
+        fields = (
+            'pk',
+            'lat',
+            'lng',
+            'post_content',
         )

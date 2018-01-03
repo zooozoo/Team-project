@@ -15,7 +15,7 @@ from post.pagination import PostListPagination, PostCategoryPagination
 from post.serializers import PostListSerializer, PostSerializer, PostContentSerializer, PostTextSerializer, \
     PostPhotoSerializer, PostPathSerializer, PostDetailSerializer, PostSearchSerializer, PostReplySerializer, \
     PostUpateSerializer, \
-    PostLikeSerializer
+    PostLikeSerializer, PostTextListSerializer, PostPhotoListSerializer, PostPathListSerializer
 from utils.permissions import IsPostAuthorOrReadOnly
 
 now = datetime.now().date()
@@ -88,9 +88,9 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     queryset = Post.objects.all()
 
     content_serializer = PostContentSerializer
-    text_serializer = PostTextSerializer
-    photo_serializer = PostPhotoSerializer
-    path_serializer = PostPathSerializer
+    text_serializer = PostTextListSerializer
+    photo_serializer = PostPhotoListSerializer
+    path_serializer = PostPathListSerializer
 
     def list(self, request, *args, **kwargs):
         data = {"post_content": []}
@@ -235,3 +235,10 @@ class PostSearchAPIView(generics.GenericAPIView):
             '-pk', )
 
         return Response(PostListSerializer(qs, many=True).data, )
+
+#
+# class FollowUserPostList(generics.ListAPIView):
+#     serializer_class = PostListSerializer
+#
+#     def get_queryset(self):
+#         return queryset
