@@ -1,56 +1,36 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-
 from member.models import User
 from post.models import Post
 
 
-
-
-
 class UserSerializer(serializers.ModelSerializer):
+    img_profile = serializers.SerializerMethodField()
+    token = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
             'pk',
-            'email',
-            'img_profile',
-            'username'
-        )
-
-
-class PostListSerializer(serializers.ModelSerializer):
-    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
-    author = UserSerializer()
-
-    # PostList뷰에서 Post의 첫 사진을 커버로 이용하기 위한 필드
-    # method필드가 아니라 릴레이션필드를 사용해야함.
-
-    class Meta:
-        model = Post
-        fields = (
-            'pk',
-            'author',
-            'title',
-            'start_date',
-            'end_date',
-            'img',
-            'continent',
-            'liked',
-            'num_liked',
-
-        )
-
-
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'img_profile',
             'username',
+            'email',
+            'img_profile',
+            'token',
+        )
+
+    def get_img_profile(self, obj):
+        return obj.img_profile.url
+
+    def get_token(self, obj):
+        return Token.objects.get_or_create(user=obj)[0].key
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = (
+            'key',
         )
 
 
@@ -90,10 +70,16 @@ class SignupSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError()
 
     def create(self, validated_data):
+        if validated_data.get('img_profile', None):
+            return self.Meta.model.objects.create_user(
+                username=validated_data['username'],
+                password=validated_data['password'],
+                img_profile=validated_data['img_profile'],
+                email=validated_data['email'],
+            )
         return self.Meta.model.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            img_profile=validated_data['img_profile'],
             email=validated_data['email'],
         )
 
@@ -147,25 +133,28 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
         return instance
 
 
-class PostSerializer(serializers.ModelSerializer):
-    # User 정보를 author에 표현하기 위해 멤버 모델 완성 후 바꿔줘야함
+# psot list ordering을 위한 serializer
+class PostListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('-pk', )
+        return super(PostListSerializer, self).to_representation(data)
 
+
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        list_serializer_class = PostListSerializer
         fields = (
             'pk',
+            'author',
             'title',
             'start_date',
             'end_date',
-            'created_at',
+            'img',
             'continent',
+            'liked',
+            'num_liked',
         )
-
-
-class LikedPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = '__all__'
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -173,8 +162,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     followers = UserSerializer(many=True, read_only=True)
     following_number = serializers.SerializerMethodField()
     follower_number = serializers.SerializerMethodField()
-    posts = PostListSerializer(many=True, read_only=True)
-    liked_posts = LikedPostSerializer(many=True, read_only=True)
+    posts = PostSerializer(many=True, read_only=True)
+    liked_posts = PostSerializer(many=True, read_only=True)
+    img_profile = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -192,11 +182,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
     def get_following_number(self, obj):
-        user = self.context['request'].user
+        user = self.context['user']
         return user.following_relations.count()
 
     def get_follower_number(self, obj):
-        user = self.context['request'].user
+        user = self.context['user']
         return user.follower_relations.count()
 
-
+    def get_img_profile(self, obj):
+        return obj.img_profile.url

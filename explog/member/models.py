@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from utils.custom_image_filed import DefaultStaticImageField
+
 
 class User(AbstractUser):
     username = models.CharField(
@@ -8,11 +10,10 @@ class User(AbstractUser):
         blank=False,
         unique=True,
     )
-
-    img_profile = models.ImageField(
+    img_profile = DefaultStaticImageField(
         upload_to='user',
         blank=True,
-        null=True,
+        default_image_path='default.jpg',
     )
     email = models.EmailField(
         unique=True,
@@ -35,14 +36,12 @@ class User(AbstractUser):
         related_name='followers',
     )
 
-
     # 유저의 모든 포스트들이 받은 좋아요 갯수를 총합하여 total_liked 필드에 저장
     def save_total_liked(self, *args, **kwargs):
         posts = self.posts.all()
         total_liked = sum([i.num_liked for i in posts])
         self.total_liked = total_liked
         self.save(*args, **kwargs)
-
 
 
 class Relation(models.Model):

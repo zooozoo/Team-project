@@ -27,11 +27,10 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static_root')
 
-#배포관련 에러 때문에 주석처리
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-#패포관련 에러때문에 주석처리
+# 패포관련 에러때문에 주석처리
 # STATIC_URL로의 요청은 STATICFILES_DIRS경로의 목록에서 파일을 찾아 리턴
 STATICFILES_DIRS = [
     STATIC_DIR,
@@ -40,7 +39,7 @@ STATICFILES_DIRS = [
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 DEFAULT_IMAGE_PATH = 'default.jpg'
-DEFAULT_IMAGE_POST_PATH ='default_post.jpg'
+DEFAULT_IMAGE_POST_PATH = 'default_post.jpg'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -76,7 +75,6 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'member.User'
 
-
 # drf token auth를 사용하기 위한 설정
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -95,7 +93,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'raven.contrib.django.raven_compat',
     'django_extensions',
     'storages',
     'rest_framework',
@@ -105,6 +102,7 @@ INSTALLED_APPS = [
     'member',
 ]
 
+# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -182,11 +180,4 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-# sentry
-import os
-import raven
 
-
-RAVEN_CONFIG = config_secret_common['sentry']
-
-from raven.contrib.django.raven_compat.models import client

@@ -8,36 +8,37 @@ from rest_framework.views import APIView
 
 from member.models import Relation
 from .serializers import (
-    LoginSerializer,
     SignupSerializer,
     FollwingSerializer,
     UserProfileUpdateSerializer,
     UserPasswordUpdateSerializer,
-    UserProfileSerializer)
+    UserProfileSerializer,
+    UserSerializer,
+    TokenSerializer,
+)
 
 User = get_user_model()
 
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        email = request.data['email']
-        password = request.data['password']
+        try:
+            email = request.data['email']
+            password = request.data['password']
+        except:
+            data = {
+                'key error': '\'email\'key and \'password\'key must be set'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
         user = authenticate(
             email=email,
             password=password,
         )
         if user:
-            token, token_created = Token.objects.get_or_create(user=user)
-            data = {
-                'pk': LoginSerializer(user).data['pk'],
-                'username': LoginSerializer(user).data['username'],
-                'email': LoginSerializer(user).data['email'],
-                'img_profile': LoginSerializer(user).data['img_profile'],
-                'token': token.key,
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        data = {
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+        data = {
             'message': 'Invalid credentials'
         }
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
@@ -48,11 +49,36 @@ class Signup(APIView):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            # 반환되는 데이터는 img_profile의 url을 표현해주기 위하여
+            # Userserializer를 활용한다
+            user = User.objects.get(pk=serializer.data['pk'])
+            user_serializer = UserSerializer(user)
+            return Response(user_serializer.data)
         key = list(serializer.errors.keys())[0]
         value = list(serializer.errors.values())[0][0]
         error = {key: value}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CheckTokenExists(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data['token']
+        except:
+            data = {
+                'Key': 'Invalid Key'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            # raise APIException('Invalid Key')
+        if Token.objects.filter(key=data).exists():
+            token = Token.objects.get(key=data)
+            serializer = TokenSerializer(token)
+            return Response(serializer.data)
+        else:
+            data = {
+                'token': 'token does not exist'
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Follwing(APIView):
@@ -75,30 +101,46 @@ class Follwing(APIView):
             if from_user.following_users.filter(pk=to_user.pk).exists():
                 from_user.following_relations.get(to_user=to_user).delete()
                 data = {
-                    'unfollowing': str(serializer.validated_data['to_user'])
+                    'unfollowing': serializer.validated_data['to_user']
                 }
                 return Response(data, status=status.HTTP_200_OK)
             # from_user가 to_user를 follow하고 있지 않은 경우 관계 생성
             Relation.objects.create(from_user=from_user, to_user=to_user, )
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         # validation error가 발생 했을 경우 에러 메시지 가공
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserProfile(APIView):
+class MyProfile(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         user = request.user
         serializer = UserProfileSerializer(
             user,
-            context={'request': request}
+            context={'user': user}
         )
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserProfile(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, user_pk, *args, **kwargs):
+        if User.objects.filter(pk=user_pk).exists():
+            user = User.objects.get(pk=user_pk)
+            serializer = UserProfileSerializer(
+                user,
+                context={'user': user}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        error = {
+            'user_pk': '존재하지 않는 user'
+        }
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileUpdate(APIView):
@@ -114,12 +156,16 @@ class UserProfileUpdate(APIView):
         )
         if serializer.is_valid():
             serializer.update(user, validated_data=serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            serializer = UserSerializer(user)
+            data = {
+                'username': serializer.data['username'],
+                'img_profile': serializer.data['img_profile']
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserPasswordUpdate(APIView):
@@ -133,8 +179,7 @@ class UserPasswordUpdate(APIView):
                 'success': 'password가 변경되었습니다.'
             }
             return Response(data, status=status.HTTP_200_OK)
-        er_messege = list(serializer.errors.values())[0][0]
-        data = {
-            'error': er_messege
-        }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        key = list(serializer.errors.keys())[0]
+        value = list(serializer.errors.values())[0][0]
+        error = {key: value}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)

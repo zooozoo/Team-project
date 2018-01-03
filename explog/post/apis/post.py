@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, date
 
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import filters
 from rest_framework import generics
@@ -9,6 +10,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from post.models import Post, PostContent, PostText, PostPhoto, PostPath, PostLike, PostReply
 from post.pagination import PostListPagination, PostCategoryPagination
@@ -17,6 +19,8 @@ from post.serializers import PostListSerializer, PostSerializer, PostContentSeri
     PostUpateSerializer, \
     PostLikeSerializer, PostTextListSerializer, PostPhotoListSerializer, PostPathListSerializer
 from utils.permissions import IsPostAuthorOrReadOnly
+
+User = get_user_model()
 
 now = datetime.now().date()
 earlier = now - timedelta(days=3)
@@ -236,9 +240,19 @@ class PostSearchAPIView(generics.GenericAPIView):
 
         return Response(PostListSerializer(qs, many=True).data, )
 
-#
-# class FollowUserPostList(generics.ListAPIView):
-#     serializer_class = PostListSerializer
-#
-#     def get_queryset(self):
-#         return queryset
+
+class FollowUserPostList(generics.ListAPIView):
+    def list(self, request, *args, **kwargs):
+        user = self.request.user
+        queryset = user.following_users.all()
+
+        data = {"following_posts":[]}
+
+        for query in queryset:
+
+            post = Post.objects.filter(author=query)
+            dics = PostListSerializer(post, many=True).data
+            for dic in dics:
+                data["following_posts"].append(dic)
+
+        return Response(data)

@@ -2,7 +2,7 @@ from django.conf.urls import url
 from .apis import PostListAPIView,PostDetailAPIView, PostReplyListAPIView,PostReplyDeleteUpdateAPIView,PostTextAPIView,PostPathAPIView, \
     PostCreateAPIView, PostPathCreateAPIView, PostTextCreateAPIView, PostPhotoCreateAPIView, PostContentAPIView, \
     PostReplyCreateAPIView, PostPhotoAPIView, PostDeleteUpdateAPIView, PostLikeToggle, PostCategoryListAPIView, \
-    PostSearchAPIView
+    PostSearchAPIView, FollowUserPostList
 
 urlpatterns = [
 
@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^(?P<post_pk>\d+)/photo/$',PostPhotoCreateAPIView.as_view(),name='post_photo_create'),
     url(r'^photo/(?P<photo_pk>\d+)/$',PostPhotoAPIView.as_view(),name='post_photo'),
     url(r'^(?P<post_pk>\d+)/like/$', PostLikeToggle.as_view(), name='post_like'),
+    url(r'^follow/$',FollowUserPostList.as_view(),name='follow_post'),
 
 ]

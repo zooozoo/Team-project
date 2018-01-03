@@ -2,7 +2,8 @@ from django.conf import settings
 from django.db.models.fields.files import ImageFieldFile, ImageField
 
 __all__ = (
-    'DefaultStaticImageField','DefaultStaticPostImageField',
+    'DefaultStaticImageField',
+    'DefaultStaticPostImageField',
 )
 
 
@@ -26,9 +27,6 @@ class DefaultStaticImageField(ImageField):
         super().__init__(*args, **kwargs)
 
 
-
-
-
 class DefaultStaticPostImageField(ImageField):
     attr_class = DefaultStaticImageFieldFile
 
@@ -37,3 +35,5 @@ class DefaultStaticPostImageField(ImageField):
             'default_image_path',
             getattr(settings, 'DEFAULT_IMAGE_POST_PATH', 'default_post.jpg'))
         super().__init__(*args, **kwargs)
+
+
