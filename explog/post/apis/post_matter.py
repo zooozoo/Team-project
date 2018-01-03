@@ -168,15 +168,11 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
 
         instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
         self.check_object_permissions(self.request, instance)
-
         return instance
 
     def perform_create(self, serializer):
-
         instance = self.get_object()
         if PostContent.objects.filter(post=instance).first() is None:
-
-
             post_content = PostContent.objects.create(post=instance, content_type='img',order=1)
             serializer.save(post_content=post_content)
         else:

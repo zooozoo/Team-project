@@ -16,18 +16,20 @@ class PostTextSerializer(serializers.ModelSerializer):
 
         )
 
-class PostTextListSerializer(serializers.ModelSerializer):
 
+class PostTextListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostText
         fields = (
             'pk',
-            'post_content',
+
             'content',
             'created_at',
             'type',
-        )
 
+            'post_content',
+
+        )
 
 
 class PostPhotoSerializer(serializers.ModelSerializer):
@@ -38,6 +40,17 @@ class PostPhotoSerializer(serializers.ModelSerializer):
             'photo',
             'created_at',
 
+        )
+
+
+class PostPhotoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostPhoto
+        fields = (
+            'pk',
+            'photo',
+            'created_at',
+            'post_content',
         )
 
 
@@ -72,4 +85,15 @@ class PostPathSerializer(serializers.ModelSerializer):
             'pk',
             'lat',
             'lng',
+        )
+
+
+class PostPathListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostPath
+        fields = (
+            'pk',
+            'lat',
+            'lng',
+            'post_content',
         )
