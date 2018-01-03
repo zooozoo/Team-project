@@ -141,6 +141,8 @@ class PostListSerializer(serializers.ListSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    img = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
         list_serializer_class = PostListSerializer
@@ -155,6 +157,9 @@ class PostSerializer(serializers.ModelSerializer):
             'liked',
             'num_liked',
         )
+
+    def get_img(self, obj):
+        return obj.img.url
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
