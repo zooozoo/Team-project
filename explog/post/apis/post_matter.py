@@ -239,12 +239,10 @@ class PostPathCreateAPIView(generics.CreateAPIView):
             serializer.save(post_content=post_content)
 
         else:
-            instance = self.get_object()
+            instance = PostContent.objects.get(content_type='path')
 
-            post_content_order = 0
-            post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
 
-            serializer.save(post_content=post_content)
+            serializer.save(post_content=instance)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

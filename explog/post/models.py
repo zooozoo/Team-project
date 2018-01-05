@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from utils.custom_image_filed import DefaultStaticPostImageField
+from jsonfield import JSONField
 
 User = get_user_model()
 
@@ -118,8 +119,9 @@ TEXT_CHOICES = (
 class PostText(models.Model):
     # 글의 내용
     content = models.TextField()
+
     # 작성시점
-    created_at = models.DateField(blank=True, null=True)
+    created_at = models.DateField(auto_now_add=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -164,13 +166,16 @@ class PostPhoto(models.Model):
         return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
 
 
+
+
 # 경로 테이블
 class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
-    post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
     # 위도경도 - 데이터 타입이 실수
-    lat = models.FloatField()
-    lng = models.FloatField()
+    lat = JSONField()
+    lng = JSONField()
+
+    post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
 
     def __unicode__(self):
         return 'lat:{}, lng:{}'.format(self.lat, self.lng)
