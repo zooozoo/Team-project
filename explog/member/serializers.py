@@ -20,7 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def get_img_profile(self, obj):
-        return obj.img_profile.url
+        s = obj.img_profile.url
+        return s.split('?')[0]
 
     def get_token(self, obj):
         return Token.objects.get_or_create(user=obj)[0].key
@@ -159,7 +160,8 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
     def get_img(self, obj):
-        return obj.img.url
+        s = obj.img.url
+        return s.split('?')[0]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -195,4 +197,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return user.follower_relations.count()
 
     def get_img_profile(self, obj):
-        return obj.img_profile.url
+        s = obj.img_profile.url
+        return s.split('?')[0]

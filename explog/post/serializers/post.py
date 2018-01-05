@@ -17,7 +17,6 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = (
             'pk',
-
             'title',
             'start_date',
             'end_date',
@@ -74,7 +73,9 @@ class PostLikeSerializer(serializers.ModelSerializer):
         )
 
     def get_img(self, obj):
-        return obj.img.url
+        s=obj.img.url
+        return s.split('?')[0]
+
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -101,7 +102,8 @@ class PostListSerializer(serializers.ModelSerializer):
         )
 
     def get_img(self, obj):
-        return obj.img.url
+        s = obj.img.url
+        return s.split('?')[0]
 
 
 class PostDetailSerializer(serializers.ModelSerializer):

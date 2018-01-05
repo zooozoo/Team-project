@@ -65,7 +65,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #     'email',
 # ]
 
-# USER MODEL
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -97,6 +96,7 @@ INSTALLED_APPS = [
     'storages',
     'rest_framework',
     'rest_framework.authtoken',
+    'push_notifications',
 
     'post',
     'member',
@@ -173,11 +173,9 @@ TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
-
 USE_L10N = True
 
 USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
