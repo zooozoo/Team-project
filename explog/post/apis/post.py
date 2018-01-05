@@ -105,8 +105,8 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
 
             if queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
-                path_qs = PostPath.objects.get(post_content=queryset)
-                path_serializer = self.path_serializer(path_qs)
+                path_qs = PostPath.objects.filter(post_content=queryset)
+                path_serializer = self.path_serializer(path_qs,many=True)
                 dic = post_content_serializer.data
                 dic.update({"content".format(queryset.pk): path_serializer.data})
                 data["post_content"].append(
@@ -179,7 +179,8 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"detail": "여행기 하나가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+        data = {"detail": "여행기 하나가 삭제되었습니다."}
+        return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 
 # 포스트 좋아요 & 좋아요 취소 토글
@@ -229,6 +230,7 @@ class PostLikeToggle(generics.GenericAPIView):
 
 class PostSearchAPIView(generics.GenericAPIView):
     serializer_class = PostSearchSerializer
+    pagination_class = PostCategoryPagination
 
     def post(self, request):
         word = request.data['word']
@@ -237,8 +239,22 @@ class PostSearchAPIView(generics.GenericAPIView):
             Q(title__contains=word) | Q(author__username__contains=word) | Q(author__email__contains=word)).order_by(
             '-pk', )
 
-        return Response(PostListSerializer(qs, many=True).data, )
+        page = self.paginate_queryset(qs)
+        return self.get_paginated_response(PostListSerializer(page,many=True).data)
+    def get_paginated_response(self, data):
+        """
+        Return a paginated style `Response` object for the given output data.
+        """
+        assert self.paginator is not None
+        return self.paginator.get_paginated_response(data)
 
+    def paginate_queryset(self, queryset):
+        """
+        Return a single page of results, or `None` if pagination is disabled.
+        """
+        if self.paginator is None:
+            return None
+        return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
 class FollowUserPostList(generics.ListAPIView):
     def list(self, request, *args, **kwargs):

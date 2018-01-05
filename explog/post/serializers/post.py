@@ -1,5 +1,6 @@
 import datetime
 
+import re
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -73,9 +74,8 @@ class PostLikeSerializer(serializers.ModelSerializer):
         )
 
     def get_img(self, obj):
-        s=obj.img.url
+        s = obj.img.url
         return s.split('?')[0]
-
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -104,6 +104,7 @@ class PostListSerializer(serializers.ModelSerializer):
     def get_img(self, obj):
         s = obj.img.url
         return s.split('?')[0]
+
 
 
 class PostDetailSerializer(serializers.ModelSerializer):

@@ -122,7 +122,6 @@ class PostTextCreateAPIView(generics.CreateAPIView):
         permissions.IsAuthenticated,
     )
 
-
     def get_object(self):
 
         instance = get_object_or_404(Post.objects.filter(pk=self.kwargs['post_pk']))
@@ -133,11 +132,11 @@ class PostTextCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         instance = self.get_object()
         if PostContent.objects.filter(post=instance).first() is None:
-            post_content = PostContent.objects.create(post=instance, content_type='txt',order=1)
+            post_content = PostContent.objects.create(post=instance, content_type='txt', order=1)
             serializer.save(post_content=post_content)
 
         else:
-            post_content_order = PostContent.objects.filter(post=instance).order_by('-pk')[0].order+1
+            post_content_order = PostContent.objects.filter(post=instance).order_by('-pk')[0].order + 1
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='txt')
             serializer.save(post_content=post_content)
 
@@ -173,10 +172,10 @@ class PostPhotoCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         instance = self.get_object()
         if PostContent.objects.filter(post=instance).first() is None:
-            post_content = PostContent.objects.create(post=instance, content_type='img',order=1)
+            post_content = PostContent.objects.create(post=instance, content_type='img', order=1)
             serializer.save(post_content=post_content)
         else:
-            post_content_order = PostContent.objects.filter(post=instance).order_by('-pk')[0].order+1
+            post_content_order = PostContent.objects.filter(post=instance).order_by('-pk')[0].order + 1
             post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='img')
             serializer.save(post_content=post_content)
 
@@ -215,21 +214,20 @@ class PostPathCreateAPIView(generics.CreateAPIView):
 
         if PostContent.objects.first() is None:
             instance = self.get_object()
-            post_content = PostContent.objects.create(post=instance, content_type='path',order=0)
+            post_content = PostContent.objects.create(post=instance, content_type='path', order=0)
             serializer.save(post_content=post_content)
         else:
-            instance = self.get_object()
-            post_content_order = 0
-            post_content = PostContent.objects.create(post=instance, order=post_content_order, content_type='path')
-            serializer.save(post_content=post_content)
+            instance = PostContent.objects.get(content_type='path')
+            serializer.save(post_content=instance)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        path = PostPath.objects.get(pk=serializer.data['pk'])
-        instance = PostContent.objects.get(pk=path.post_content.pk)
-        data = PostContentListSerializer(instance).data
-        data.update({"content": PostPathSerializer(path).data})
-        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
+def create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    self.perform_create(serializer)
+    headers = self.get_success_headers(serializer.data)
+    path = PostPath.objects.get(pk=serializer.data['pk'])
+    instance = PostContent.objects.get(pk=path.post_content.pk)
+    data = PostContentListSerializer(instance).data
+    data.update({"content": PostPathSerializer(path).data})
+    return Response(data, status=status.HTTP_201_CREATED, headers=headers)
