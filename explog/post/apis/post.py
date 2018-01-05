@@ -94,7 +94,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
     content_serializer = PostContentSerializer
     text_serializer = PostTextListSerializer
     photo_serializer = PostPhotoListSerializer
-    path_serializer = PostPathSerializer
+    path_serializer = PostPathListSerializer
 
     def list(self, request, *args, **kwargs):
         data = {"post_content": []}
@@ -177,7 +177,8 @@ class PostDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"detail": "여행기 하나가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+        data = {"detail": "여행기 하나가 삭제되었습니다."}
+        return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 
 # 포스트 좋아요 & 좋아요 취소 토글

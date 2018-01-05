@@ -69,4 +69,5 @@ class PostReplyDeleteUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"detail":"댓글 하나가 삭제되었습니다."},status=status.HTTP_204_NO_CONTENT)
+        data = {"detail": "댓글 하나가 삭제되었습니다."}
+        return Response(data,status=status.HTTP_204_NO_CONTENT)

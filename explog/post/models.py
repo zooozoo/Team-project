@@ -121,7 +121,7 @@ class PostText(models.Model):
     content = models.TextField()
 
     # 작성시점
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateField(null=True, blank=True)
     # 수정시점
     updated_at = models.DateTimeField(auto_now=True)
     # 여행기 내용 클래스를 외래키로 가짐
@@ -172,8 +172,8 @@ class PostPhoto(models.Model):
 class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
     # 위도경도 - 데이터 타입이 실수
-    lat = JSONField()
-    lng = JSONField()
+    lat = models.FloatField()
+    lng = models.FloatField()
 
     post_content = models.ForeignKey(PostContent, on_delete=models.CASCADE, related_name='path')
 
