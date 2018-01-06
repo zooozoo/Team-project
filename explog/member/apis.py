@@ -83,7 +83,6 @@ class CheckTokenExists(APIView):
                 'Key': 'Invalid Key'
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
-            # raise APIException('Invalid Key')
         if Token.objects.filter(key=data).exists():
             token = Token.objects.get(key=data)
             serializer = TokenSerializer(token)

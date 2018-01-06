@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, date
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from push_notifications.models import APNSDevice
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
@@ -222,7 +223,16 @@ class PostLikeToggle(generics.GenericAPIView):
             PostLike.objects.create(author_id=user.pk, post_id=instance.pk)
             instance.save_num_liked()  # Post의 num_liked 업데이트
             instance.author.save_total_liked()  # User의 total_liked 업데이트
-
+            if APNSDevice.objects.filter(user=user):
+                device = APNSDevice.objects.get(user=user)
+                user_img_profile = user.img_profile.url.split('?')[0]
+                messege = f'{user.username}님이 좋아합니다.'
+                device.send_message(
+                    message={"title":"like", "body": messege},
+                    sound="chime.aiff",
+                    extra={"user" : user_img_profile},
+                    badge=1
+                )
         # 업데이트된 instance를 PostSerializer에 넣어 직렬화하여 응답으로 돌려줌
         # serializer만 수정하면 될듯
         return Response(PostLikeSerializer(instance).data)
