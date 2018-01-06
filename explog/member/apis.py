@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from push_notifications.models import APNSDevice
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
@@ -36,8 +37,14 @@ class LoginView(APIView):
         )
         if user:
             serializer = UserSerializer(user)
+            if request.data.__contains__('device-token'):
+                APNSDevice.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        "registration_id": request.data['device-token']
+                    }
+                )
             return Response(serializer.data, status=status.HTTP_200_OK)
-
         data = {
             'message': 'Invalid credentials'
         }
@@ -52,6 +59,13 @@ class Signup(APIView):
             # 반환되는 데이터는 img_profile의 url을 표현해주기 위하여
             # Userserializer를 활용한다
             user = User.objects.get(pk=serializer.data['pk'])
+            if request.data.__contains__('device-token'):
+                APNSDevice.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        "registration_id": request.data['device-token']
+                    }
+                )
             user_serializer = UserSerializer(user)
             return Response(user_serializer.data)
         key = list(serializer.errors.keys())[0]
