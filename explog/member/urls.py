@@ -8,7 +8,7 @@ from .apis import (
     UserPasswordUpdate,
     CheckTokenExists,
     MyProfile,
-    UserProfile
+    UserProfile,
 )
 
 urlpatterns = [

@@ -21,6 +21,7 @@ class User(AbstractUser):
     )
     # 총 좋아요 수
     total_liked = models.IntegerField(default=0)
+    badge = models.IntegerField(default=0)
 
     USERNAME_FIELD = 'email'
     # createsuperuser 명령을 할 때 'username'을 물어보지 않아
@@ -42,6 +43,12 @@ class User(AbstractUser):
         total_liked = sum([i.num_liked for i in posts])
         self.total_liked = total_liked
         self.save(*args, **kwargs)
+
+    def add_badge_count(self):
+        self.badge += 1
+
+    def reset_badge_count(self):
+        self.badge = 0
 
 
 class Relation(models.Model):

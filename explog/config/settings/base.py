@@ -84,7 +84,7 @@ REST_FRAMEWORK = {
 }
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-    "APNS_CERTIFICATE": os.path.join(CONFIG_SECRET_DIR, 'apns_pem'),
+    "APNS_CERTIFICATE": os.path.join(CONFIG_SECRET_DIR, 'apns_cer'),
     "APNS_TOPIC": "com.minjun.Pushnotification",
     "APNS_USE_SANDBOX": "api.development.push.apple.com",
 }
@@ -106,6 +106,7 @@ INSTALLED_APPS = [
 
     'post',
     'member',
+    'push',
 ]
 
 # MIDDLEWARE

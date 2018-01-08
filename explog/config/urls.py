@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^post/', include('post.urls', namespace='post')),
     url(r'^member/', include('member.urls', namespace='memeber')),
+    url(r'^push/', include('push.urls', namespace='push')),
 ]
 urlpatterns += static(
     settings.MEDIA_URL,

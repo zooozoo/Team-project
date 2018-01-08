@@ -196,3 +196,5 @@ class UserPasswordUpdate(APIView):
         value = list(serializer.errors.values())[0][0]
         error = {key: value}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+

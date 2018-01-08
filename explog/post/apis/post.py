@@ -2,11 +2,13 @@ from datetime import datetime, timedelta, date
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from push_notifications.apns import APNSServerError
 from push_notifications.models import APNSDevice
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework.exceptions import APIException
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -107,7 +109,7 @@ class PostDetailAPIView(ListModelMixin, generics.GenericAPIView):
             if queryset.content_type == 'path':
                 post_content_serializer = self.content_serializer(queryset)
                 path_qs = PostPath.objects.filter(post_content=queryset)
-                path_serializer = self.path_serializer(path_qs,many=True)
+                path_serializer = self.path_serializer(path_qs, many=True)
                 dic = post_content_serializer.data
                 dic.update({"content".format(queryset.pk): path_serializer.data})
                 data["post_content"].append(
@@ -216,7 +218,6 @@ class PostLikeToggle(generics.GenericAPIView):
             liked.delete()
             instance.save_num_liked()  # Post의 num_liked 업데이트
             instance.author.save_total_liked()  # User의 total_liked 업데이트
-
         # 없으면
         else:
             # PostLike 테이블에서 관계 생성
@@ -227,12 +228,20 @@ class PostLikeToggle(generics.GenericAPIView):
                 device = APNSDevice.objects.get(user=user)
                 user_img_profile = user.img_profile.url.split('?')[0]
                 messege = f'{user.username}님이 좋아합니다.'
-                device.send_message(
-                    message={"title":"like", "body": messege},
-                    sound="chime.aiff",
-                    extra={"user" : user_img_profile},
-                    badge=1
-                )
+                try:
+                    instance.author.add_badge_count()
+                    instance.author.save()
+                    device.send_message(
+                        message={"title": "like", "body": messege},
+                        sound="chime.aiff",
+                        extra={"user": user_img_profile},
+                        badge=instance.author.badge
+                    )
+                except APNSServerError:
+                    data = {
+                        "APNSServerError": "bad device token"
+                    }
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
         # 업데이트된 instance를 PostSerializer에 넣어 직렬화하여 응답으로 돌려줌
         # serializer만 수정하면 될듯
         return Response(PostLikeSerializer(instance).data)
@@ -250,7 +259,8 @@ class PostSearchAPIView(generics.GenericAPIView):
             '-pk', )
 
         page = self.paginate_queryset(qs)
-        return self.get_paginated_response(PostListSerializer(page,many=True).data)
+        return self.get_paginated_response(PostListSerializer(page, many=True).data)
+
     def get_paginated_response(self, data):
         """
         Return a paginated style `Response` object for the given output data.
@@ -266,12 +276,13 @@ class PostSearchAPIView(generics.GenericAPIView):
             return None
         return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
+
 class FollowUserPostList(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         user = self.request.user
         queryset = user.following_users.all()
 
-        data = {"following_posts":[]}
+        data = {"following_posts": []}
 
         for query in queryset:
 

@@ -159,8 +159,6 @@ class PostPhoto(models.Model):
         return 'photo:{}, created_at:{}'.format(self.photo, self.created_at)
 
 
-
-
 # 경로 테이블
 class PostPath(models.Model):
     # 여행기 내용 클래스를 외래키로 가짐
