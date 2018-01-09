@@ -50,6 +50,9 @@ class User(AbstractUser):
     def reset_badge_count(self):
         self.badge = 0
 
+    def set_badge_count(self, num):
+        self.badge = num
+
 
 class Relation(models.Model):
     # 내가 팔로우 하는 사람

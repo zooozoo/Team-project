@@ -1,13 +1,23 @@
 from django.core.validators import RegexValidator
+from push_notifications.models import APNSDevice
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from member.models import User
 from post.models import Post
 
 
+class APNsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = APNSDevice
+        fields = (
+            'registration_id',
+        )
+
 class UserSerializer(serializers.ModelSerializer):
     img_profile = serializers.SerializerMethodField()
     token = serializers.SerializerMethodField()
+
+    apnsdevice_set = APNsSerializer(many=True)
 
     class Meta:
         model = User
@@ -17,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'img_profile',
             'token',
+            'apnsdevice_set',
         )
 
     def get_img_profile(self, obj):

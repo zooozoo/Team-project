@@ -62,6 +62,7 @@ class Signup(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.save()
             user = User.objects.get(pk=serializer.data['pk'])
             if request.data.__contains__('device-token'):
                 try:
@@ -76,7 +77,6 @@ class Signup(APIView):
                         "device-token": "중복된 토큰값"
                     }
                     return Response(error, status=status.HTTP_400_BAD_REQUEST)
-            serializer.save()
             # 반환되는 데이터는 img_profile의 url을 표현해주기 위하여
             # Userserializer를 활용한다
             user_serializer = UserSerializer(user)

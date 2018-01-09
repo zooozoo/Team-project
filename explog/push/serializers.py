@@ -1,9 +1,19 @@
 from django.contrib.auth import get_user_model
+from push_notifications.models import APNSDevice
 from rest_framework import serializers
 
 from post.models import PostLike
 
 User = get_user_model()
+
+
+class SetBadgeCountSerializer(serializers.Serializer):
+    badge = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        instance.set_badge_count(validated_data['badge'])
+        instance.save()
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,3 +45,11 @@ class PushListSerializer(serializers.ModelSerializer):
 
     def get_post(self, obj):
         return obj.post.title
+
+
+class APNsDeviceTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = APNSDevice
+        fields = (
+            'registration_id',
+        )
