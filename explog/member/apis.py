@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from push_notifications.models import APNSDevice
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -38,12 +39,18 @@ class LoginView(APIView):
         if user:
             serializer = UserSerializer(user)
             if request.data.__contains__('device-token'):
-                APNSDevice.objects.update_or_create(
-                    user=user,
-                    defaults={
-                        "registration_id": request.data['device-token']
+                try:
+                    APNSDevice.objects.update_or_create(
+                        user=user,
+                        defaults={
+                            "registration_id": request.data['device-token']
+                        }
+                    )
+                except:
+                    error = {
+                        "device-token": "중복된 토큰값"
                     }
-                )
+                    return Response(error, status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer.data, status=status.HTTP_200_OK)
         data = {
             'message': 'Invalid credentials'
@@ -55,17 +62,23 @@ class Signup(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
+            user = User.objects.get(pk=serializer.data['pk'])
+            if request.data.__contains__('device-token'):
+                try:
+                    APNSDevice.objects.update_or_create(
+                        user=user,
+                        defaults={
+                            "registration_id": request.data['device-token']
+                        }
+                    )
+                except:
+                    error = {
+                        "device-token": "중복된 토큰값"
+                    }
+                    return Response(error, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             # 반환되는 데이터는 img_profile의 url을 표현해주기 위하여
             # Userserializer를 활용한다
-            user = User.objects.get(pk=serializer.data['pk'])
-            if request.data.__contains__('device-token'):
-                APNSDevice.objects.update_or_create(
-                    user=user,
-                    defaults={
-                        "registration_id": request.data['device-token']
-                    }
-                )
             user_serializer = UserSerializer(user)
             return Response(user_serializer.data)
         key = list(serializer.errors.keys())[0]
@@ -196,5 +209,3 @@ class UserPasswordUpdate(APIView):
         value = list(serializer.errors.values())[0][0]
         error = {key: value}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
-
