@@ -224,8 +224,8 @@ class PostLikeToggle(generics.GenericAPIView):
             PostLike.objects.create(author_id=user.pk, post_id=instance.pk)
             instance.save_num_liked()  # Post의 num_liked 업데이트
             instance.author.save_total_liked()  # User의 total_liked 업데이트
-            if APNSDevice.objects.filter(user=user):
-                device = APNSDevice.objects.get(user=user)
+            if APNSDevice.objects.filter(user=instance.author):
+                device = APNSDevice.objects.get(user=instance.author)
                 user_img_profile = user.img_profile.url.split('?')[0]
                 messege = f'{user.username}님이 좋아합니다.'
                 try:
