@@ -1,4 +1,4 @@
-![screen](/gif/splash.gif) ![screen](/gif/Main.gif) ![screen](/gif/Reply.gif) ![screen](/gif/SignUp.gif) ![screen](/img/SignUp.png)
+![screen](/gif/splash.gif) ![screen](/gif/Main.gif) ![screen](/gif/SignUp.gif)
 
 
 * 프로젝트명 : Explog
