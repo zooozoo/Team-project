@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ei9-Rd-KhU">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Search Trips!🐳-->
+        <scene sceneID="7df-LZ-QnF">
+            <objects>
+                <viewController id="X0X-zl-F5v" customClass="SearchViewController" customModule="Explog" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UBT-bA-L8d">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Ma-ji-2qQ">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="T3d-es-yob">
+                                <rect key="frame" x="177.5" y="323" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="T3d-es-yob" firstAttribute="centerY" secondItem="UBT-bA-L8d" secondAttribute="centerY" id="1Pm-IZ-38b"/>
+                            <constraint firstItem="T3d-es-yob" firstAttribute="centerX" secondItem="UBT-bA-L8d" secondAttribute="centerX" id="9g7-Eu-cGz"/>
+                            <constraint firstItem="azo-Gm-qtt" firstAttribute="bottom" secondItem="6Ma-ji-2qQ" secondAttribute="bottom" id="IrG-UW-dCa"/>
+                            <constraint firstItem="azo-Gm-qtt" firstAttribute="trailing" secondItem="6Ma-ji-2qQ" secondAttribute="trailing" id="RPf-W5-3pA"/>
+                            <constraint firstItem="6Ma-ji-2qQ" firstAttribute="leading" secondItem="azo-Gm-qtt" secondAttribute="leading" id="ncK-Xj-grw"/>
+                            <constraint firstItem="6Ma-ji-2qQ" firstAttribute="top" secondItem="azo-Gm-qtt" secondAttribute="top" id="vuq-YW-B97"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="azo-Gm-qtt"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" image="search" id="oIE-e4-RGE"/>
+                    <navigationItem key="navigationItem" title="Search Trips!🐳" id="WqW-p1-Gft"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="indicator" destination="T3d-es-yob" id="SrS-QA-6up"/>
+                        <outlet property="tableView" destination="6Ma-ji-2qQ" id="2Ah-Ac-Eve"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9OA-AB-uyT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1786.4000000000001" y="814.54272863568224"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="D9U-jn-0QD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ei9-Rd-KhU" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="abf-Bq-EuO">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="X0X-zl-F5v" kind="relationship" relationship="rootViewController" id="4oV-j0-7dK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UIo-Fv-NJD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="690" y="815"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="search" width="30" height="30"/>
+    </resources>
+</document>

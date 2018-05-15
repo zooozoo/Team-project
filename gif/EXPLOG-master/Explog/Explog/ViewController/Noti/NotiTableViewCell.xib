@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="NotiCell" rowHeight="279" id="krc-ec-6fI" customClass="NotiTableViewCell" customModule="Explog" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="439" height="279"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="krc-ec-6fI" id="z15-b0-sfz">
+                <rect key="frame" x="0.0" y="0.0" width="439" height="278.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="North America" translatesAutoresizingMaskIntoConstraints="NO" id="rZl-A7-vEI">
+                        <rect key="frame" x="22" y="31" width="0.0" height="217"/>
+                        <constraints>
+                            <constraint firstAttribute="width" id="wzR-ia-xLC"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1시간 전" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1QI-FL-IV4">
+                        <rect key="frame" x="32" y="31" width="397" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <color key="textColor" red="0.75406885150000003" green="0.75408679249999999" blue="0.75407713649999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XX 님이 XX 게시물을 좋아요 했습니다" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Foe-Jz-Zsj">
+                        <rect key="frame" x="32" y="62" width="397" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="Foe-Jz-Zsj" secondAttribute="trailing" constant="10" id="Al9-di-beb"/>
+                    <constraint firstAttribute="trailing" secondItem="1QI-FL-IV4" secondAttribute="trailing" constant="10" id="EML-HV-CoY"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="rZl-A7-vEI" secondAttribute="bottom" constant="20" id="Eup-Bi-rBO"/>
+                    <constraint firstItem="rZl-A7-vEI" firstAttribute="top" secondItem="z15-b0-sfz" secondAttribute="topMargin" constant="20" id="Kfs-r1-7lO"/>
+                    <constraint firstItem="Foe-Jz-Zsj" firstAttribute="leading" secondItem="rZl-A7-vEI" secondAttribute="trailing" constant="10" id="gIf-u1-gds"/>
+                    <constraint firstItem="Foe-Jz-Zsj" firstAttribute="top" secondItem="1QI-FL-IV4" secondAttribute="bottom" constant="10" id="ibw-Vv-UHf"/>
+                    <constraint firstItem="1QI-FL-IV4" firstAttribute="leading" secondItem="rZl-A7-vEI" secondAttribute="trailing" constant="10" id="jqc-Qb-PXm"/>
+                    <constraint firstItem="1QI-FL-IV4" firstAttribute="top" secondItem="rZl-A7-vEI" secondAttribute="top" id="mjD-1E-ftB"/>
+                    <constraint firstItem="rZl-A7-vEI" firstAttribute="leading" secondItem="z15-b0-sfz" secondAttribute="leadingMargin" constant="2" id="nbS-f4-zce"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="dateLabel" destination="1QI-FL-IV4" id="MmC-0h-T9d"/>
+                <outlet property="profileImage" destination="rZl-A7-vEI" id="YpL-pD-bwL"/>
+                <outlet property="profileOfWidth" destination="wzR-ia-xLC" id="vSX-X0-DUv"/>
+                <outlet property="statusMessageLabel" destination="Foe-Jz-Zsj" id="NvA-4T-FfD"/>
+            </connections>
+            <point key="canvasLocation" x="-67.5" y="-93.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="North America" width="700" height="700"/>
+    </resources>
+</document>
