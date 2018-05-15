@@ -1,5 +1,6 @@
-![screen](/gif/splash.gif) ![screen](/gif/Main.gif) ![screen](/gif/SignUp.gif)
+# 나의 여행 이야기 EXPLOG
 
+![screen](/gif/splash.gif) ![screen](/gif/Main.gif) ![screen](/gif/SignUp.gif)
 
 * 프로젝트명 : Explog
 * 기간 : 2017.11.27 – 2018.01.12
